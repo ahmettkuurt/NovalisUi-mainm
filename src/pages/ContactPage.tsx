@@ -6,7 +6,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-import ContactWizard from './contact/ContactWizard';
+import ContactForm from './contact/ContactForm';
 
 import {
   ContactAction,
@@ -36,9 +36,9 @@ import {
   ResponseBadgeTitle,
 } from './ContactPageStyles';
 
-const PHONE_NUMBER = '0500 000 00 00';
-const PHONE_LINK = 'tel:+905000000000';
-const WHATSAPP_LINK = 'https://wa.me/905000000000';
+const PHONE_NUMBER = '0850 123 45 67';
+const PHONE_LINK = 'tel:+908501234567';
+const WHATSAPP_LINK = 'https://wa.me/908501234567';
 
 function ContactPage() {
   return (
@@ -60,9 +60,9 @@ function ContactPage() {
         </PageTitle>
 
         <PageDescription>
-          İhtiyacınızı birkaç kısa adımda paylaşın.
-          Ekibimiz size uygun hizmet planı ve teklif
-          için en kısa sürede sizinle iletişime geçsin.
+          Formu doldurarak temizlik ihtiyacınızı ve size ulaşabileceğimiz
+          bilgileri paylaşın. Ekibimiz uygun hizmet planı ve teklif için en kısa
+          sürede sizinle iletişime geçsin.
         </PageDescription>
       </PageHeader>
 
@@ -176,7 +176,7 @@ function ContactPage() {
                   </InfoTitle>
 
                   <InfoDescription>
-                    İhtiyacınızı birkaç kısa adımda
+                    İhtiyacınızı form üzerinden
                     bizimle paylaşın.
                   </InfoDescription>
                 </div>
@@ -219,7 +219,7 @@ function ContactPage() {
           </ContactPanel>
         </ContactDetails>
 
-        <ContactWizard />
+        <ContactForm />
       </ContactGrid>
     </ContactPageContainer>
   );

@@ -1,46 +1,122 @@
-export interface ContactFormData {
-  fullName: string;
-  phone: string;
-  email: string;
-  serviceType: string;
-  cityDistrict: string;
-  preferredDate: string;
-  message: string;
-  kvkkApproved: boolean;
-}
+import type {
+  ContactFormData,
+  ContactRequestResponse,
+} from '../types/contact';
 
-export interface ContactRequestResponse {
-  success: boolean;
-  requestId?: string;
-  message: string;
-}
+const DEFAULT_WEB_FORM_ENDPOINT =
+  'https://song-tenant-camel-serve.trycloudflare.com/webhook-test/web-form-intake-postgres';
 
-const REQUEST_DELAY = 1000;
+const WEB_FORM_ENDPOINT =
+  import.meta.env.VITE_WEB_FORM_ENDPOINT?.trim() ||
+  DEFAULT_WEB_FORM_ENDPOINT;
+
+const normalizePhone = (value: string) => {
+  const digits = value.replace(/\D/g, '');
+
+  if (digits.startsWith('90') && digits.length === 12) {
+    return `+${digits}`;
+  }
+
+  if (digits.startsWith('0') && digits.length === 11) {
+    return `+90${digits.slice(1)}`;
+  }
+
+  if (digits.length === 10) {
+    return `+90${digits}`;
+  }
+
+  return value.trim();
+};
+
+const nullableNumber = (value: string) => {
+  if (!value.trim()) {
+    return null;
+  }
+
+  const parsedValue = Number(value);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+};
+
+const buildPayload = (
+  formData: ContactFormData,
+  submissionId: string,
+) => ({
+  submission_id: submissionId,
+  full_name: formData.fullName.trim(),
+  phone: formData.phone.trim() ? normalizePhone(formData.phone) : null,
+  email: formData.email.trim().toLowerCase() || null,
+  service_code: formData.serviceType || null,
+  province: formData.province.trim(),
+  district: formData.district.trim(),
+  address_line: formData.addressLine.trim() || null,
+  area_sqm: nullableNumber(formData.areaSqm),
+  room_count: nullableNumber(formData.roomCount),
+  floor_count: nullableNumber(formData.floorCount),
+  requested_date: formData.requestedDate || null,
+  preferred_time: formData.preferredTime || null,
+  frequency: formData.frequency || null,
+  extras: formData.extras,
+  message: formData.message.trim(),
+  service_consent: formData.serviceConsent,
+  marketing_consent: formData.marketingConsent,
+});
+
+const readResponse = async (response: Response) => {
+  const text = await response.text();
+
+  if (!text) {
+    return {} as Record<string, unknown>;
+  }
+
+  try {
+    return JSON.parse(text) as Record<string, unknown>;
+  } catch {
+    return { message: text };
+  }
+};
 
 export const createContactRequest = async (
   formData: ContactFormData,
+  submissionId: string,
 ): Promise<ContactRequestResponse> => {
-  const requestPayload = {
-    ...formData,
-    fullName: formData.fullName.trim(),
-    phone: formData.phone.replace(/\s/g, ''),
-    email: formData.email.trim().toLowerCase(),
-    cityDistrict: formData.cityDistrict.trim(),
-    message: formData.message.trim(),
-    source: 'WEBSITE',
-    createdAt: new Date().toISOString(),
-  };
+  const payload = buildPayload(formData, submissionId);
 
-  console.log('Otomasyon sistemine gönderilecek talep:', requestPayload);
+  try {
+    const response = await fetch(WEB_FORM_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    const result = await readResponse(response);
 
-  await new Promise<void>((resolve) => {
-    window.setTimeout(resolve, REQUEST_DELAY);
-  });
+    if (!response.ok) {
+      return {
+        success: false,
+        message:
+          typeof result.message === 'string'
+            ? result.message
+            : 'Talebiniz gönderilemedi. Lütfen biraz sonra tekrar deneyin.',
+      };
+    }
 
-  return {
-    success: true,
-    requestId: crypto.randomUUID(),
-    message:
-      'Talebiniz başarıyla alındı. Ekibimiz en kısa sürede sizinle iletişime geçecektir.',
-  };
+    return {
+      success: true,
+      requestId:
+        typeof result.lead_id === 'string'
+          ? result.lead_id
+          : undefined,
+      message:
+        typeof result.message === 'string'
+          ? result.message
+          : 'Talebiniz alındı. En kısa sürede sizinle iletişime geçeceğiz.',
+    };
+  } catch {
+    return {
+      success: false,
+      message:
+        'Bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.',
+    };
+  }
 };

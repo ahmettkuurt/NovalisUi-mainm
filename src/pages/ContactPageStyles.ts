@@ -400,6 +400,11 @@ export const Input = styled.input<ValidationStyleProps>`
   padding: 0 15px;
   ${fieldBaseStyles}
 `;
+export const Select = styled.select<ValidationStyleProps>`
+  height: 49px;
+  padding: 0 15px;
+  ${fieldBaseStyles}
+`;
 export const Textarea = styled.textarea<ValidationStyleProps>`
   min-height: 140px;
   padding: 14px 15px;

@@ -1,66 +1,34 @@
 export type ContactServiceType =
-  | 'HOME_CLEANING'
-  | 'OFFICE_CLEANING'
-  | 'POST_CONSTRUCTION_CLEANING'
-  | 'PERIODIC_CLEANING'
-  | 'DEEP_CLEANING';
+  | 'ev_temizligi'
+  | 'ofis_temizligi'
+  | 'insaat_sonrasi'
+  | 'apartman_ortak_alan';
 
-export type WizardStep =
-  | 'service'
-  | 'serviceDetails'
-  | 'location'
-  | 'date'
-  | 'contact'
-  | 'description'
-  | 'summary';
-
-export type ServiceDetailField =
-  | 'roomCount'
-  | 'bathroomCount'
-  | 'homeExtras'
-  | 'areaSize'
-  | 'employeeCount'
-  | 'frequency'
-  | 'propertyType'
-  | 'dirtLevel'
-  | 'focusAreas';
-
-export type ServiceDetailValue =
-  | string
-  | string[];
-
-export type ServiceDetails = Partial<
-  Record<ServiceDetailField, ServiceDetailValue>
->;
-
-export interface ContactOption {
-  value: string;
-  label: string;
-}
-
-export interface ServiceDetailQuestion {
-  id: string;
-  field: ServiceDetailField;
-  title: string;
-  description: string;
-  multiple?: boolean;
-  optional?: boolean;
-  options: ContactOption[];
-}
+export type ContactFrequency =
+  | ''
+  | 'tek_seferlik'
+  | 'haftalik'
+  | 'iki_haftada_bir'
+  | 'aylik';
 
 export interface ContactFormData {
-  serviceType: ContactServiceType | '';
-  serviceDetails: ServiceDetails;
-
-  cityDistrict: string;
-  preferredDate: string;
-
   fullName: string;
   phone: string;
   email: string;
-
+  serviceType: ContactServiceType | '';
+  province: string;
+  district: string;
+  addressLine: string;
+  areaSqm: string;
+  roomCount: string;
+  floorCount: string;
+  requestedDate: string;
+  preferredTime: string;
+  frequency: ContactFrequency;
+  extras: string[];
   message: string;
-  kvkkApproved: boolean;
+  serviceConsent: boolean;
+  marketingConsent: boolean;
 }
 
 export interface ContactRequestResponse {

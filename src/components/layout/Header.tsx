@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import {
   Link,
   NavLink,
-  useLocation,
 } from 'react-router-dom';
 
 import novalisLogo from '../../assets/logo/novalis.jpeg';
@@ -52,8 +51,6 @@ function Header() {
   const [isScrolled, setIsScrolled] =
     useState(false);
 
-  const location = useLocation();
-
   const { t, i18n } = useTranslation();
 
   const currentLanguage =
@@ -79,10 +76,6 @@ function Header() {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
-
-  useEffect(() => {
-    closeMobileMenu();
-  }, [location.pathname]);
 
   useEffect(() => {
     const previousOverflow =
@@ -198,6 +191,7 @@ function Header() {
                     <NavigationLink
                       as={NavLink}
                       to={item.path}
+                      onClick={closeMobileMenu}
                     >
                       {({ isActive }) => (
                         <>
@@ -239,6 +233,7 @@ function Header() {
             <QuoteLink
               as={Link}
               to="/iletisim"
+              onClick={closeMobileMenu}
             >
               <span>
                 {t('header.getQuote')}

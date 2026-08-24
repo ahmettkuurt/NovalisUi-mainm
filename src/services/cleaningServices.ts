@@ -4,11 +4,16 @@ import officeCleaningImage from '../assets/images/OficeCleaning.png';
 import sofaCleaningImage from '../assets/images/SofaCleaning.png';
 import windowCleaningImage from '../assets/images/windowCleaning.png';
 
-import type { ContactServiceType } from '../types/contact';
+export type CleaningServiceType =
+  | 'HOME_CLEANING'
+  | 'OFFICE_CLEANING'
+  | 'POST_CONSTRUCTION_CLEANING'
+  | 'PERIODIC_CLEANING'
+  | 'DEEP_CLEANING';
 
 export interface CleaningService {
   id: number;
-  serviceType: ContactServiceType;
+  serviceType: CleaningServiceType;
   titleKey: string;
   descriptionKey: string;
   image: string;

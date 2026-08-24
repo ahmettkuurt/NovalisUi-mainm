@@ -74,3 +74,16 @@ export default defineConfig([
 
 ```
 # novalisUı
+
+
+## Destek sohbeti
+
+Sitedeki sabit destek sohbet paneli `src/components/layout/SupportChat.tsx` bileşeninde bulunur. Bu katman yalnızca frontend deneyimini sağlar; chatbotun n8n workflow'u, agent mantığı ve backend işlemleri bu projeye dahil değildir.
+
+n8n workflow'u hazır olduğunda webhook adresini `.env` dosyasında aşağıdaki değişkenle tanımlayın:
+
+```bash
+VITE_SUPPORT_CHAT_ENDPOINT=https://alan-adiniz.example/webhook/support-chat
+```
+
+Frontend, n8n'e şu JSON gövdesini gönderir: `session_id`, `message`, `source` ve `language`. Yanıt tarafında `reply`, `message`, `output` veya `text` alanlarından ilk dolu olan metin olarak gösterilir.

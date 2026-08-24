@@ -198,5 +198,26 @@
       "plannedService": "Planned and punctual service"
     }
   }
+},
+"supportChat": {
+  "button": "Support",
+  "open": "Open support chat",
+  "close": "Close support chat",
+  "title": "Novalis Support",
+  "status": "Online support",
+  "subtitle": "Get quick help with our services, quotes and appointments.",
+  "welcome": "Hello, I am part of the Novalis support team. How can I help you with our cleaning services or quote process?",
+  "placeholder": "Write your message...",
+  "inputLabel": "Support message",
+  "send": "Send message",
+  "loading": "Preparing a reply",
+  "quickTitle": "Quick contact",
+  "quickText": "Reach our team during business hours.",
+  "callUs": "Call",
+  "hint": "Press Enter to send · Shift + Enter for a new line",
+  "empty": "No messages yet.",
+  "connectionPending": "The chat connection is being prepared. For now, you can leave a request through our quote form.",
+  "emptyResponse": "Your message was received. Our team will get back to you shortly.",
+  "error": "We could not connect right now. Please call us or use the contact form."
 }
 }

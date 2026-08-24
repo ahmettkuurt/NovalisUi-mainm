@@ -11,6 +11,7 @@ import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
 import PageTransition from './components/layout/PageTransition';
 import RouteSparkles from './components/layout/RouteSparkles';
+import SupportChat from './components/layout/SupportChat';
 
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -78,6 +79,7 @@ function AppContent() {
       </AnimatePresence>
 
       <Footer />
+      <SupportChat />
     </>
   );
 }

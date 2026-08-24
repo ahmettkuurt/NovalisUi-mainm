@@ -199,5 +199,26 @@
       "plannedService": "Planlı ve zamanında hizmet"
     }
   }
+},
+"supportChat": {
+  "button": "Destek",
+  "open": "Destek sohbetini aç",
+  "close": "Destek sohbetini kapat",
+  "title": "Novalis Destek",
+  "status": "Çevrimiçi destek",
+  "subtitle": "Hizmetlerimiz, teklif süreci ve randevu hakkında hızlıca bilgi alın.",
+  "welcome": "Merhaba, ben Novalis destek ekibiyim. Temizlik hizmetlerimiz veya teklif süreci hakkında nasıl yardımcı olabilirim?",
+  "placeholder": "Mesajınızı yazın...",
+  "inputLabel": "Destek mesajı",
+  "send": "Mesajı gönder",
+  "loading": "Yanıt hazırlanıyor",
+  "quickTitle": "Hızlı iletişim",
+  "quickText": "Çalışma saatlerinde ekibimize ulaşın.",
+  "callUs": "Ara",
+  "hint": "Enter ile gönderin · Shift + Enter yeni satır",
+  "empty": "Henüz mesaj yok.",
+  "connectionPending": "Sohbet bağlantısı hazırlanıyor. Şimdilik teklif formumuzdan talep bırakabilirsiniz.",
+  "emptyResponse": "Mesajınız alındı. Ekibimiz en kısa sürede size dönüş yapacak.",
+  "error": "Şu anda bağlantı kurulamadı. Lütfen telefonla veya iletişim formu üzerinden bize ulaşın."
 }
 }

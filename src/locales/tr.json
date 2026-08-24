@@ -1,0 +1,203 @@
+{
+  "cleaningServices": {
+    "label": "Temizliğin ötesinde, kusursuz bir yaşam alanı",
+    "title": {
+      "first": "Kusursuz planlama.",
+      "second": "Profesyonel temizlik.",
+      "highlight": "Siz yaşayın, temizliği bize bırakın."
+    },
+    "description": "Ev, ofis ve kurumsal çalışma alanları için profesyonel temizlik hizmetleri sunuyoruz. Deneyimli ekibimizle yaşam ve çalışma alanlarınızı hijyenik, düzenli ve güvenli hale getiriyoruz.",
+    "assurance": {
+      "badge": "Novalis Güvencesi",
+      "title": "Her hizmette aynı özen, aynı kalite ve güven.",
+      "description": "Deneyimli ekibimiz ve planlı çalışma anlayışımızla temizliği zahmetsiz bir deneyime dönüştürüyoruz."
+    },
+    "stats": {
+      "experience": "Yıllık deneyim",
+      "completedServices": "Tamamlanan hizmet",
+      "satisfaction": "Müşteri memnuniyeti"
+    },
+    "discoverServices": "Hizmetlerimizi keşfedin",
+    "viewService": "Hizmeti incele",
+    "serviceAriaLabel": "{{service}} hizmetini incele"
+  },
+
+  "footer": {
+    "logoAlt": "Novalis Temizlik Hizmetleri",
+    "navigationAriaLabel": "Footer menüsü",
+    "location": "İstanbul",
+    "copyright": "Novalis Temizlik Hizmetleri",
+
+    "navigation": {
+      "home": "Ana Sayfa",
+      "services": "Hizmetler",
+      "about": "Hakkımızda",
+      "contact": "İletişim"
+    },
+
+    "legal": {
+      "kvkk": "KVKK",
+      "privacy": "Gizlilik"
+    },
+
+    "whatsappAriaLabel": "WhatsApp üzerinden iletişime geç"
+  },
+
+  "header": {
+  "logoAlt": "Novalis Temizlik Hizmetleri",
+  "homeAriaLabel": "Novalis ana sayfa",
+  "navigationAriaLabel": "Ana menü",
+  "getQuote": "Ücretsiz Teklif Al",
+  "openMenu": "Menüyü aç",
+  "closeMenu": "Menüyü kapat",
+  "languageAriaLabel": "Dil değiştir",
+  "navigation": {
+    "home": "Ana Sayfa",
+    "services": "Hizmetler",
+    "about": "Hakkımızda",
+    "contact": "İletişim"
+  }
+},
+"about": {
+  "hero": {
+    "eyebrow": "Hizmet Anlayışımız",
+    "title": "Her alan için aynı özen,",
+    "highlightedTitle": "her hizmette aynı standart.",
+    "description": "Evden ofise, kurumsal alanlardan inşaat sonrası temizliğe kadar her ihtiyaca özel çözümler geliştiriyoruz. Doğru ekip, doğru ekipman ve planlı çalışma modeliyle temizliği zahmetsiz bir deneyime dönüştürüyoruz."
+  },
+
+  "process": {
+    "listen": {
+      "title": "İhtiyacınızı Dinliyoruz",
+      "description": "Alanınızı ve beklentilerinizi anlayarak size en uygun temizlik çözümünü belirliyoruz."
+    },
+    "plan": {
+      "title": "Size Özel Planlıyoruz",
+      "description": "Doğru ekip, ekipman ve çalışma programını ihtiyacınıza göre oluşturuyoruz."
+    },
+    "deliver": {
+      "title": "Farkı Hissettiriyoruz",
+      "description": "Detaylara gösterdiğimiz özenle alanınızı temiz, ferah ve kullanıma hazır hale getiriyoruz."
+    }
+  },
+
+  "imageHighlights": {
+    "expertTeam": "Uzman Ekip",
+    "plannedService": "Planlı Hizmet"
+  },
+
+  "imageTrust": {
+    "title": "Novalis Standardı",
+    "description": "Her hizmette aynı kalite anlayışı"
+  },
+
+  "mission": {
+    "title": "Misyonumuz",
+    "description": "Yaşam ve çalışma alanlarını daha temiz, sağlıklı ve konforlu hale getirirken müşterilerimize güvenilir, planlı ve zahmetsiz bir hizmet deneyimi sunmak."
+  },
+
+  "vision": {
+    "title": "Vizyonumuz",
+    "description": "Yenilikçi teknolojileri ve sürdürülebilir hizmet modelini mükemmeliyetçi bir yaklaşımla birleştirerek, profesyonel temizlik sektörünün güven ve kalite standartlarını yeniden yazmak."
+  },
+
+  "story": {
+    "eyebrow": "Hikâyemiz",
+    "title": "Temizliği sadece bir hizmet değil, iyi tasarlanmış bir deneyim olarak görüyoruz.",
+    "description": "Novalis, profesyonel temizlik hizmetlerini daha güvenilir, planlı ve erişilebilir hale getirme hedefiyle doğdu. Temizlik hizmetini yalnızca sahadaki uygulamadan ibaret görmüyor; tekliften randevuya, ekip planlamasından kalite kontrolüne kadar tüm süreci profesyonel ve takip edilebilir bir yapıyla yönetiyoruz."
+  },
+
+  "values": {
+    "eyebrow": "Değerlerimiz",
+    "title": "Her hizmetin arkasında",
+    "highlightedTitle": "aynı ilkeler var.",
+    "description": "Hizmet kalitemizi yalnızca sonuçla değil, sürecin her aşamasında benimsediğimiz çalışma prensipleriyle şekillendiriyoruz.",
+
+    "items": {
+      "care": {
+        "title": "Özen",
+        "description": "Her alanı kendi alanımız gibi değerlendiriyor, en küçük detaylara kadar titizlikle çalışıyoruz."
+      },
+      "trust": {
+        "title": "Güven",
+        "description": "Söz verdiğimiz hizmeti planlanan zamanda, şeffaf ve profesyonel şekilde sunuyoruz."
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik",
+        "description": "Doğaya duyarlı ürünleri ve kaynakları verimli kullanan temizlik yöntemlerini tercih ediyoruz."
+      },
+      "quality": {
+        "title": "Kalite",
+        "description": "Her hizmette aynı standardı koruyarak fark edilen ve güven veren sonuçlar hedefliyoruz."
+      }
+    }
+  },
+
+  "imageAlt": "Novalis profesyonel temizlik hizmeti"
+},
+"services": {
+  "items": {
+    "home": {
+      "title": "Ev Temizliği",
+      "description": "Profesyonel ev temizliği hizmetimizle yaşam alanlarınızı hijyenik, düzenli ve ferah hale getiriyoruz."
+    },
+    "office": {
+      "title": "Ofis ve İş Yeri Temizliği",
+      "description": "Ofis ve iş yerleri için profesyonel temizlik hizmetleri sunarak temiz, düzenli ve sağlıklı çalışma alanları oluşturuyoruz."
+    },
+    "postConstruction": {
+      "title": "İnşaat Sonrası Temizlik",
+      "description": "İnşaat ve tadilat sonrası oluşan toz, kir ve kalıntıları detaylı temizlik hizmetimizle ortadan kaldırıyoruz."
+    },
+    "periodic": {
+      "title": "Periyodik Temizlik",
+      "description": "Düzenli ve planlı periyodik temizlik hizmetimizle ev ve iş yerlerinizin sürekli temiz ve bakımlı kalmasını sağlıyoruz."
+    },
+    "deep": {
+      "title": "Derinlemesine Temizlik",
+      "description": "Detaylı ve derinlemesine temizlik hizmetimizle ulaşılması zor alanlar dahil yaşam ve çalışma alanlarınızı baştan sona temizliyoruz."
+    }
+  }
+},
+"servicesPage": {
+  "hero": {
+    "label": "Hizmetlerimiz",
+    "title": "Her alan için profesyonel",
+    "highlight": "temizlik çözümleri",
+    "description": "Ev, ofis ve yaşam alanlarınız için ihtiyacınıza özel, güvenilir ve planlı temizlik hizmetleri sunuyoruz. Alanınızı deneyimli ekibimize güvenle teslim edin."
+  },
+  "actions": {
+    "getQuote": "Ücretsiz Teklif Al",
+    "whatsapp": "WhatsApp’tan Yazın"
+  },
+  "trust": {
+    "label": "NOVALIS FARKI",
+    "title": "Temizlikte güveni, kaliteyi ve planlamayı bir araya getiriyoruz.",
+    "items": {
+      "expert": {
+        "title": "Uzman Ekip",
+        "description": "İşini bilen, deneyimli ve özenli ekiplerle çalışıyoruz."
+      },
+      "reliable": {
+        "title": "Güven Veren Hizmet",
+        "description": "Alanınıza kendi alanımız gibi özen gösteriyoruz."
+      },
+      "planned": {
+        "title": "Planlı ve Zamanında",
+        "description": "Belirlenen programa sadık kalıyor, süreci baştan sona düzenli yönetiyoruz."
+      }
+    }
+  },
+  "viewService": "Hizmeti incele",
+  "serviceAriaLabel": "{{service}} hizmetini incele",
+  "modal": {
+    "closeAriaLabel": "Hizmet detay penceresini kapat",
+    "features": {
+      "professionalTeam": "Eğitimli ve profesyonel temizlik ekibi",
+      "equipment": "Alan türüne uygun ekipman ve ürün kullanımı",
+      "hygiene": "Detaylı temizlik ve hijyen uygulaması",
+      "plannedService": "Planlı ve zamanında hizmet"
+    }
+  }
+}
+}

@@ -1,0 +1,202 @@
+{
+  "cleaningServices": {
+    "label": "Beyond cleaning, a flawless living space",
+    "title": {
+      "first": "Perfect planning.",
+      "second": "Professional cleaning.",
+      "highlight": "You enjoy life, leave the cleaning to us."
+    },
+    "description": "We provide professional cleaning services for homes, offices and corporate workspaces. With our experienced team, we make your living and working spaces hygienic, organized and safe.",
+    "assurance": {
+      "badge": "Novalis Assurance",
+      "title": "The same care, quality and trust in every service.",
+      "description": "With our experienced team and planned approach, we turn cleaning into an effortless experience."
+    },
+    "stats": {
+      "experience": "Years of experience",
+      "completedServices": "Completed services",
+      "satisfaction": "Customer satisfaction"
+    },
+    "discoverServices": "Discover our services",
+    "viewService": "View service",
+    "serviceAriaLabel": "View {{service}} service"
+  },
+
+  "footer": {
+    "logoAlt": "Novalis Cleaning Services",
+    "navigationAriaLabel": "Footer navigation",
+    "location": "Istanbul",
+    "copyright": "Novalis Cleaning Services",
+
+    "navigation": {
+      "home": "Home",
+      "services": "Services",
+      "about": "About Us",
+      "contact": "Contact"
+    },
+
+    "legal": {
+      "kvkk": "KVKK",
+      "privacy": "Privacy"
+    },
+
+    "whatsappAriaLabel": "Contact us via WhatsApp"
+  },
+  "header": {
+  "logoAlt": "Novalis Cleaning Services",
+  "homeAriaLabel": "Novalis home page",
+  "navigationAriaLabel": "Main navigation",
+  "getQuote": "Get a Free Quote",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "languageAriaLabel": "Change language",
+  "navigation": {
+    "home": "Home",
+    "services": "Services",
+    "about": "About Us",
+    "contact": "Contact"
+  }
+},
+"about": {
+  "hero": {
+    "eyebrow": "Our Service Approach",
+    "title": "The same care for every space,",
+    "highlightedTitle": "the same standard in every service.",
+    "description": "From homes and offices to corporate spaces and post-construction cleaning, we develop tailored solutions for every need. With the right team, the right equipment and a planned working model, we turn cleaning into an effortless experience."
+  },
+
+  "process": {
+    "listen": {
+      "title": "We Listen to Your Needs",
+      "description": "We understand your space and expectations to determine the most suitable cleaning solution for you."
+    },
+    "plan": {
+      "title": "We Plan for You",
+      "description": "We create the right team, equipment and work schedule according to your needs."
+    },
+    "deliver": {
+      "title": "We Make the Difference",
+      "description": "With our attention to detail, we leave your space clean, fresh and ready to use."
+    }
+  },
+
+  "imageHighlights": {
+    "expertTeam": "Expert Team",
+    "plannedService": "Planned Service"
+  },
+
+  "imageTrust": {
+    "title": "Novalis Standard",
+    "description": "The same commitment to quality in every service"
+  },
+
+  "mission": {
+    "title": "Our Mission",
+    "description": "To make living and working spaces cleaner, healthier and more comfortable while providing our customers with a reliable, planned and effortless service experience."
+  },
+
+  "vision": {
+    "title": "Our Vision",
+    "description": "To redefine the standards of trust and quality in the professional cleaning industry by combining innovative technologies and a sustainable service model with a commitment to excellence."
+  },
+
+  "story": {
+    "eyebrow": "Our Story",
+    "title": "We see cleaning not simply as a service, but as a well-designed experience.",
+    "description": "Novalis was founded with the goal of making professional cleaning services more reliable, planned and accessible. We do not see cleaning as limited to on-site work; from quotations and appointments to team planning and quality control, we manage the entire process in a professional and trackable way."
+  },
+
+  "values": {
+    "eyebrow": "Our Values",
+    "title": "Behind every service are",
+    "highlightedTitle": "the same principles.",
+    "description": "We shape our service quality not only through the final result, but through the working principles we follow at every stage of the process.",
+
+    "items": {
+      "care": {
+        "title": "Care",
+        "description": "We treat every space as if it were our own and work meticulously down to the smallest detail."
+      },
+      "trust": {
+        "title": "Trust",
+        "description": "We deliver the service we promise on time, transparently and professionally."
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "We prefer environmentally conscious products and cleaning methods that use resources efficiently."
+      },
+      "quality": {
+        "title": "Quality",
+        "description": "We maintain the same standard in every service and aim for results that are noticeable and trustworthy."
+      }
+    }
+  },
+
+  "imageAlt": "Novalis professional cleaning service"
+},
+"services": {
+  "items": {
+    "home": {
+      "title": "Home Cleaning",
+      "description": "With our professional home cleaning service, we make your living spaces hygienic, organized and fresh."
+    },
+    "office": {
+      "title": "Office and Workplace Cleaning",
+      "description": "We provide professional cleaning services for offices and workplaces, creating clean, organized and healthy working environments."
+    },
+    "postConstruction": {
+      "title": "Post-Construction Cleaning",
+      "description": "We remove dust, dirt and residue left after construction and renovation work with our detailed cleaning service."
+    },
+    "periodic": {
+      "title": "Periodic Cleaning",
+      "description": "With our regular and planned periodic cleaning service, we help keep your home and workplace consistently clean and well maintained."
+    },
+    "deep": {
+      "title": "Deep Cleaning",
+      "description": "With our detailed deep cleaning service, we thoroughly clean your living and working spaces, including hard-to-reach areas."
+    }
+  }
+},
+"servicesPage": {
+  "hero": {
+    "label": "Our Services",
+    "title": "Professional cleaning for",
+    "highlight": "every type of space",
+    "description": "We provide reliable and carefully planned cleaning services tailored to homes, offices and living spaces. Leave your space in the hands of our experienced team."
+  },
+  "actions": {
+    "getQuote": "Get a Free Quote",
+    "whatsapp": "Message Us on WhatsApp"
+  },
+  "trust": {
+    "label": "THE NOVALIS DIFFERENCE",
+    "title": "We bring trust, quality and careful planning together in cleaning.",
+    "items": {
+      "expert": {
+        "title": "Expert Team",
+        "description": "We work with experienced, skilled and attentive cleaning professionals."
+      },
+      "reliable": {
+        "title": "Reliable Service",
+        "description": "We care for your space as if it were our own."
+      },
+      "planned": {
+        "title": "Planned and On Time",
+        "description": "We follow the agreed schedule and manage the entire process in an organized manner."
+      }
+    }
+  },
+  "viewService": "View Service",
+  "serviceAriaLabel": "View {{service}} service",
+  "modal": {
+    "closeAriaLabel": "Close service details",
+    "features": {
+      "professionalTeam": "Trained and professional cleaning team",
+      "equipment": "Equipment and products suitable for the type of space",
+      "hygiene": "Detailed cleaning and hygiene application",
+      "plannedService": "Planned and punctual service"
+    }
+  }
+}
+}

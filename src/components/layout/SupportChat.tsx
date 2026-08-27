@@ -43,7 +43,12 @@ type ChatResponse = {
   message?: unknown;
   output?: unknown;
   text?: unknown;
+  content?: unknown;
+  data?: unknown;
 };
+
+const getResponseObject = (payload: ChatResponse | ChatResponse[]) =>
+  Array.isArray(payload) ? payload[0] ?? {} : payload;
 
 const SUPPORT_CHAT_ENDPOINT =
   import.meta.env.VITE_SUPPORT_CHAT_ENDPOINT?.trim() ||
@@ -63,21 +68,32 @@ const nowLabel = () =>
     minute: '2-digit',
   }).format(new Date());
 
-const readResponseText = (payload: ChatResponse) => {
+const readResponseText = (payload: ChatResponse | ChatResponse[]) => {
+  const response = getResponseObject(payload);
   const candidate =
-    payload.reply ?? payload.message ?? payload.output ?? payload.text;
+    response.reply ??
+    response.message ??
+    response.output ??
+    response.text ??
+    response.data ??
+    response.content;
 
   if (typeof candidate === 'string' && candidate.trim()) {
     return candidate.trim();
   }
 
-  if (
-    candidate &&
-    typeof candidate === 'object' &&
-    'text' in candidate &&
-    typeof candidate.text === 'string'
-  ) {
-    return candidate.text.trim();
+  if (candidate && typeof candidate === 'object') {
+    if ('text' in candidate && typeof candidate.text === 'string') {
+      return candidate.text.trim();
+    }
+
+    if (
+      'parts' in candidate &&
+      Array.isArray(candidate.parts) &&
+      typeof candidate.parts[0]?.text === 'string'
+    ) {
+      return candidate.parts[0].text.trim();
+    }
   }
 
   return '';
@@ -162,17 +178,22 @@ function SupportChat() {
         }),
       });
 
-      const payload = (await response.json()) as ChatResponse;
+      const responseText = await response.text();
+      let payload: ChatResponse | ChatResponse[] = {};
+
+      try {
+        payload = JSON.parse(responseText) as ChatResponse | ChatResponse[];
+      } catch {
+        payload = { reply: responseText };
+      }
+
       const reply = readResponseText(payload);
 
-      if (!response.ok) {
+      if (!response.ok || !reply) {
         throw new Error('support_chat_request_failed');
       }
 
-      appendMessage(
-        'assistant',
-        reply || t('supportChat.emptyResponse'),
-      );
+      appendMessage('assistant', reply);
     } catch {
       appendMessage('assistant', t('supportChat.error'));
     } finally {

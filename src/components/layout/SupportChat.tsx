@@ -149,7 +149,9 @@ function SupportChat() {
       const response = await fetch(SUPPORT_CHAT_ENDPOINT, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          // text/plain is a CORS-safelisted content type; the n8n gateway parses the JSON string.
+          'Content-Type': 'text/plain;charset=UTF-8',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           session_id: sessionId,

@@ -46,7 +46,8 @@ type ChatResponse = {
 };
 
 const SUPPORT_CHAT_ENDPOINT =
-  import.meta.env.VITE_SUPPORT_CHAT_ENDPOINT?.trim() || '';
+  import.meta.env.VITE_SUPPORT_CHAT_ENDPOINT?.trim() ||
+  'https://otomasyon.novaliscleaning.com/webhook/support-chat';
 
 const createId = () => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {

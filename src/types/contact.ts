@@ -4,6 +4,11 @@ export type ContactServiceType =
   | 'insaat_sonrasi'
   | 'apartman_ortak_alan';
 
+export type ContactMaterialsOption =
+  | ''
+  | 'materials_excluded'
+  | 'materials_included';
+
 export type ContactFrequency =
   | ''
   | 'tek_seferlik'
@@ -16,6 +21,7 @@ export interface ContactFormData {
   phone: string;
   email: string;
   serviceType: ContactServiceType | '';
+  materialsOption: ContactMaterialsOption;
   province: string;
   district: string;
   addressLine: string;

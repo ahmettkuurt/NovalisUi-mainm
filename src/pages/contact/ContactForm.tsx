@@ -82,6 +82,7 @@ const defaultValues: ContactFormData = {
   phone: '',
   email: '',
   serviceType: '',
+  materialsOption: '',
   province: 'Düzce',
   district: '',
   addressLine: '',
@@ -325,6 +326,36 @@ function ContactForm() {
             </FieldGroup>
 
             <FieldGroup>
+              <FieldLabel htmlFor="materials-option">
+                Temizlik malzemesi
+                <RequiredMark>*</RequiredMark>
+              </FieldLabel>
+              <Select
+                id="materials-option"
+                $hasError={Boolean(errors.materialsOption)}
+                {...register('materialsOption', {
+                  required: 'Lütfen temizlik malzemesi seçeneğini belirleyin.',
+                })}
+              >
+                <option value="">Seçiniz</option>
+                <option value="materials_excluded">
+                  Malzeme fiyata dahil değil
+                </option>
+                <option value="materials_included">
+                  Malzeme fiyata dahil
+                </option>
+              </Select>
+              {errors.materialsOption?.message && (
+                <ErrorMessage role="alert">
+                  {errors.materialsOption.message}
+                </ErrorMessage>
+              )}
+              <FieldHint>
+                Fiyat, yalnızca metrekare ve bu tercihe göre hesaplanır; hizmet türü fiyatı değiştirmez.
+              </FieldHint>
+            </FieldGroup>
+
+            <FieldGroup>
               <FieldLabel htmlFor="frequency">
                 Hizmet sıklığı
                 <OptionalMark>İsteğe bağlı</OptionalMark>
@@ -341,7 +372,7 @@ function ContactForm() {
             <FieldGroup>
               <FieldLabel htmlFor="area-sqm">
                 Metrekare
-                <OptionalMark>İsteğe bağlı</OptionalMark>
+                <RequiredMark>*</RequiredMark>
               </FieldLabel>
               <Input
                 id="area-sqm"
@@ -350,9 +381,16 @@ function ContactForm() {
                 step="0.1"
                 inputMode="decimal"
                 placeholder="Örnek: 120"
-                {...register('areaSqm')}
+                $hasError={Boolean(errors.areaSqm)}
+                {...register('areaSqm', {
+                  required: 'Lütfen metrekare bilgisini girin.',
+                  validate: (value) => Number(value) > 0 || 'Metrekare 0’dan büyük olmalıdır.',
+                })}
               />
-              <FieldHint>Yaklaşık alanı yazabilirsiniz.</FieldHint>
+              {errors.areaSqm?.message && (
+                <ErrorMessage role="alert">{errors.areaSqm.message}</ErrorMessage>
+              )}
+              <FieldHint>0–500 m² arasındaki fiyat tablosu uygulanır.</FieldHint>
             </FieldGroup>
 
             <FieldGroup>

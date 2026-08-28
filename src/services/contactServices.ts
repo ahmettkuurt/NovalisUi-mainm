@@ -46,6 +46,13 @@ const buildPayload = (
   phone: formData.phone.trim() ? normalizePhone(formData.phone) : null,
   email: formData.email.trim().toLowerCase() || null,
   service_code: formData.serviceType || null,
+  materials_option: formData.materialsOption || null,
+  materials_included:
+    formData.materialsOption === 'materials_included'
+      ? true
+      : formData.materialsOption === 'materials_excluded'
+        ? false
+        : null,
   province: formData.province.trim(),
   district: formData.district.trim(),
   address_line: formData.addressLine.trim() || null,

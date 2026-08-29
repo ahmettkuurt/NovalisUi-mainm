@@ -1,8 +1,8 @@
 export type ContactServiceType =
-  | 'ev_temizligi'
-  | 'ofis_temizligi'
-  | 'insaat_sonrasi'
-  | 'apartman_ortak_alan';
+  | 'Ev_Temizligi'
+  | 'Ofis_Temizligi'
+  | 'Insaat_Sonrasi_Temizlik'
+  | 'Apartman_Ortak_Alan_Temizligi';
 
 export type ContactMaterialsOption =
   | ''

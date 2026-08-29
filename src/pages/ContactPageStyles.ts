@@ -538,3 +538,100 @@ export const FormTrustItem = styled.span`
 
   svg { color: ${({ theme }) => theme.colors.primary}; }
 `;
+// Adım Göstergesi (Progress) Stilleri
+export const StepContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  position: relative;
+  
+  /* Aradaki bağlayıcı çizgi */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: ${({ theme }) => theme.colors.border};
+    z-index: 1;
+  }
+`;
+
+export const StepItem = styled.div`
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 60px;
+`;
+
+export const StepNumber = styled.div<{ $active: boolean; $completed: boolean }>`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: ${({ theme, $active, $completed }) =>
+    $active || $completed ? theme.colors.primary : theme.colors.background};
+  border: 2px solid ${({ theme, $active, $completed }) =>
+    $active || $completed ? theme.colors.primary : theme.colors.border};
+  color: ${({ theme, $active, $completed }) =>
+    $active || $completed ? '#fff' : theme.colors.textMuted};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+`;
+
+export const StepLabel = styled.span<{ $active: boolean }>`
+  font-size: 11px;
+  font-weight: 600;
+  color: ${({ theme, $active }) =>
+    $active ? theme.colors.primary : theme.colors.textMuted};
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+  }
+`;
+
+// İleri - Geri Buton Alanı
+export const FormActions = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 24px;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const BackButton = styled.button`
+  display: inline-flex;
+  flex: 1;
+  min-height: 56px;
+  padding: 0 16px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 14px;
+  background: ${({ theme }) => theme.colors.background};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: 200ms ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.textMuted};
+    background: ${({ theme }) => theme.colors.backgroundSoft};
+  }
+`;
+
+// SubmitButton ile aynı görünmesi için ondan türetiyoruz
+export const NextButton = styled(SubmitButton)`
+  flex: 2;
+`;

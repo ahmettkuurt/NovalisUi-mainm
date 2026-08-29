@@ -1,23 +1,20 @@
 import { useId, useState } from 'react';
 import {
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
   LoaderCircle,
   Send,
   ShieldCheck,
 } from 'lucide-react';
-import {
-  useForm,
-  useWatch,
-} from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { createContactRequest } from '../../services/contactServices';
-import type {
-  ContactFormData,
-  ContactServiceType,
-} from '../../types/contact';
+import type { ContactFormData, ContactServiceType } from '../../types/contact';
 
 import {
+  BackButton,
   Checkbox,
   CheckboxContainer,
   CheckboxLabel,
@@ -26,6 +23,7 @@ import {
   FieldHint,
   FieldLabel,
   Form,
+  FormActions,
   FormCard,
   FormDescription,
   FormGrid,
@@ -38,12 +36,15 @@ import {
   FormTrustItem,
   FormTrustList,
   Input,
+  NextButton,
   OptionalMark,
   RequiredMark,
   Select,
-  ServiceOptionButton,
-  ServiceOptions,
   StatusMessage,
+  StepContainer,
+  StepItem,
+  StepLabel,
+  StepNumber,
   SubmitButton,
   Textarea,
 } from '../ContactPageStyles';
@@ -57,24 +58,10 @@ const serviceOptions: Array<{
   value: ContactServiceType;
   label: string;
 }> = [
-  { value: 'ev_temizligi', label: 'Ev temizliği' },
-  { value: 'ofis_temizligi', label: 'Ofis temizliği' },
-  {
-    value: 'insaat_sonrasi',
-    label: 'İnşaat sonrası temizlik',
-  },
-  {
-    value: 'apartman_ortak_alan',
-    label: 'Apartman ortak alan temizliği',
-  },
-];
-
-const extraOptions = [
-  { value: 'cam', label: 'Cam temizliği' },
-  { value: 'koltuk', label: 'Koltuk temizliği' },
-  { value: 'mutfak', label: 'Mutfak detayları' },
-  { value: 'banyo', label: 'Banyo detayları' },
-  { value: 'dolap', label: 'Dolap içleri' },
+  { value: 'Ev_Temizligi', label: 'Ev temizliği' },
+  { value: 'Ofis_Temizligi', label: 'Ofis temizliği' },
+  { value: 'Insaat_Sonrasi_Temizlik', label: 'İnşaat sonrası temizlik' },
+  { value: 'Apartman_Ortak_Alan_Temizligi', label: 'Apartman ortak alan temizliği' },
 ];
 
 const defaultValues: ContactFormData = {
@@ -100,18 +87,26 @@ const defaultValues: ContactFormData = {
 
 const today = new Date().toISOString().slice(0, 10);
 
+// Adımları ve doğrulayacak alanları tanımlıyoruz
+const STEPS = [
+  { id: 1, title: 'İletişim', fields: ['fullName', 'phone', 'email'] },
+  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm'] },
+  { id: 3, title: 'Konum', fields: ['province', 'district', 'addressLine', 'requestedDate', 'preferredTime'] },
+  { id: 4, title: 'Onay', fields: ['message', 'serviceConsent', 'marketingConsent'] },
+];
+
 function ContactForm() {
+  const [currentStep, setCurrentStep] = useState(1);
   const [status, setStatus] = useState<FormStatus | null>(null);
-  const [submissionId, setSubmissionId] = useState(
-    () => crypto.randomUUID(),
-  );
+  const [submissionId, setSubmissionId] = useState(() => crypto.randomUUID());
+  
   const serviceConsentId = useId();
   const marketingConsentId = useId();
 
   const {
     register,
     control,
-    setValue,
+    trigger,
     reset,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -120,49 +115,35 @@ function ContactForm() {
     mode: 'onChange',
   });
 
-  const selectedExtras = useWatch({
-    control,
-    name: 'extras',
-  });
-  const phoneValue = useWatch({
-    control,
-    name: 'phone',
-  });
-  const emailValue = useWatch({
-    control,
-    name: 'email',
-  });
   const selectedServiceType = useWatch({
     control,
     name: 'serviceType',
   });
-  const isHomeCleaning = selectedServiceType === 'ev_temizligi';
+  const isHomeCleaning = selectedServiceType === 'Ev_Temizligi';
 
-  const toggleExtra = (value: string) => {
-    const nextExtras = selectedExtras.includes(value)
-      ? selectedExtras.filter((extra) => extra !== value)
-      : [...selectedExtras, value];
+  const handleNext = async () => {
+    // Sadece mevcut adımın alanlarını doğrula
+    const stepFields = STEPS[currentStep - 1].fields as any;
+    const isStepValid = await trigger(stepFields);
+    
+    if (isStepValid) {
+      setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+    }
+  };
 
-    setValue('extras', nextExtras, {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+  const handlePrev = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
   const onSubmit = async (data: ContactFormData) => {
     setStatus(null);
 
-    const response = await createContactRequest(
-      data,
-      submissionId,
-    );
+    const response = await createContactRequest(data, submissionId);
 
     if (!response.success) {
       setStatus({
         type: 'error',
-        message:
-          response.message ||
-          'Talebiniz gönderilemedi. Lütfen bilgilerinizi kontrol edip tekrar deneyin.',
+        message: response.message || 'Talebiniz gönderilemedi. Lütfen bilgilerinizi kontrol edip tekrar deneyin.',
       });
       return;
     }
@@ -173,7 +154,9 @@ function ContactForm() {
         ? `${response.message} Talep numaranız: ${response.requestId}.`
         : response.message,
     });
+    
     reset(defaultValues);
+    setCurrentStep(1); // Form başarıyla gönderilince başa dön
     setSubmissionId(crypto.randomUUID());
   };
 
@@ -188,501 +171,306 @@ function ContactForm() {
       </FormHeader>
 
       <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormSection>
-          <FormSectionHeader>
-            <FormSectionTitle>İletişim bilgileriniz</FormSectionTitle>
-            <FormSectionDescription>
-              Size ulaşabilmemiz için telefon veya e-posta bilgilerinizden en az
-              birini bırakın.
-            </FormSectionDescription>
-          </FormSectionHeader>
+        
+        {/* Adım Göstergesi (Progress) */}
+        <StepContainer>
+          {STEPS.map((step) => (
+            <StepItem key={step.id}>
+              <StepNumber $active={currentStep === step.id} $completed={currentStep > step.id}>
+                {currentStep > step.id ? <CheckCircle2 size={16} /> : step.id}
+              </StepNumber>
+              <StepLabel $active={currentStep === step.id}>{step.title}</StepLabel>
+            </StepItem>
+          ))}
+        </StepContainer>
 
-          <FormGrid>
-            <FieldGroup>
-              <FieldLabel htmlFor="full-name">
-                Ad soyad / şirket adı
-                <RequiredMark>*</RequiredMark>
-              </FieldLabel>
-              <Input
-                id="full-name"
-                type="text"
-                autoComplete="name"
-                placeholder="Adınız, soyadınız veya şirket adınız"
-                $hasError={Boolean(errors.fullName)}
-                {...register('fullName', {
-                  required: 'Ad soyad veya şirket adı zorunludur.',
-                  minLength: {
-                    value: 2,
-                    message: 'Lütfen en az iki karakter girin.',
-                  },
-                })}
-              />
-              {errors.fullName?.message && (
-                <ErrorMessage role="alert">
-                  {errors.fullName.message}
-                </ErrorMessage>
-              )}
-            </FieldGroup>
+        {/* 1. ADIM: İLETİŞİM */}
+        {currentStep === 1 && (
+          <FormSection>
+            <FormSectionHeader>
+              <FormSectionTitle>İletişim bilgileriniz</FormSectionTitle>
+              <FormSectionDescription>
+                Size ulaşabilmemiz için iletişim bilgilerinizi girin.
+              </FormSectionDescription>
+            </FormSectionHeader>
 
-            <FieldGroup>
-              <FieldLabel htmlFor="phone">Telefon</FieldLabel>
-              <Input
-                id="phone"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                placeholder="0555 111 22 33"
-                $hasError={Boolean(errors.phone)}
-                {...register('phone', {
-                  validate: (value) => {
-                    if (!value.trim() && !emailValue.trim()) {
-                      return 'Telefon veya e-posta alanlarından en az birini doldurun.';
-                    }
+            <FormGrid>
+              <FieldGroup>
+                <FieldLabel htmlFor="full-name">
+                  Ad soyad / şirket adı <RequiredMark>*</RequiredMark>
+                </FieldLabel>
+                <Input
+                  id="full-name"
+                  type="text"
+                  placeholder="Adınız, soyadınız veya şirket adınız"
+                  $hasError={Boolean(errors.fullName)}
+                  {...register('fullName', {
+                    required: 'Ad soyad veya şirket adı zorunludur.',
+                    minLength: { value: 2, message: 'En az iki karakter girin.' },
+                  })}
+                />
+                {errors.fullName?.message && <ErrorMessage>{errors.fullName.message}</ErrorMessage>}
+              </FieldGroup>
 
-                    if (
-                      value.trim() &&
-                      value.replace(/\D/g, '').length < 10
-                    ) {
-                      return 'Lütfen geçerli bir telefon numarası girin.';
-                    }
+              <FieldGroup>
+                <FieldLabel htmlFor="phone">Telefon <RequiredMark>*</RequiredMark></FieldLabel>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="0555 111 22 33"
+                  $hasError={Boolean(errors.phone)}
+                  {...register('phone', {
+                    required: 'Telefon numarası zorunludur.',
+                    minLength: { value: 10, message: 'Geçerli bir telefon girin.' },
+                  })}
+                />
+                {errors.phone?.message && <ErrorMessage>{errors.phone.message}</ErrorMessage>}
+              </FieldGroup>
 
-                    return true;
-                  },
-                })}
-              />
-              {errors.phone?.message && (
-                <ErrorMessage role="alert">
-                  {errors.phone.message}
-                </ErrorMessage>
-              )}
-              {!phoneValue && !emailValue && (
-                <FieldHint>En az bir iletişim bilgisi zorunludur.</FieldHint>
-              )}
-            </FieldGroup>
+              <FieldGroup>
+                <FieldLabel htmlFor="email">E-posta <RequiredMark>*</RequiredMark></FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="ornek@firma.com"
+                  $hasError={Boolean(errors.email)}
+                  {...register('email', {
+                    required: 'E-mail adresi zorunludur.',
+                    pattern: { value: /\S+@\S+\.\S+/, message: 'Geçerli bir e-mail girin.' }
+                  })}
+                />
+                {errors.email?.message && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+              </FieldGroup>
+            </FormGrid>
+          </FormSection>
+        )}
 
-            <FieldGroup>
-              <FieldLabel htmlFor="email">E-posta</FieldLabel>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                placeholder="ornek@firma.com"
-                $hasError={Boolean(errors.email)}
-                {...register('email', {
-                  validate: (value) => {
-                    if (!value.trim() && !phoneValue.trim()) {
-                      return 'Telefon veya e-posta alanlarından en az birini doldurun.';
-                    }
+        {/* 2. ADIM: HİZMET DETAYLARI */}
+        {currentStep === 2 && (
+          <FormSection>
+            <FormSectionHeader>
+              <FormSectionTitle>Hizmet detayları</FormSectionTitle>
+              <FormSectionDescription>
+                Teklifinizi doğru hazırlayabilmemiz için hizmet türünü seçin.
+              </FormSectionDescription>
+            </FormSectionHeader>
 
-                    if (
-                      value.trim() &&
-                      !/^\S+@\S+\.\S+$/.test(value.trim())
-                    ) {
-                      return 'Lütfen geçerli bir e-posta adresi girin.';
-                    }
+            <FormGrid>
+              <FieldGroup>
+                <FieldLabel htmlFor="service-type">
+                  Hizmet <RequiredMark>*</RequiredMark>
+                </FieldLabel>
+                <Select
+                  id="service-type"
+                  $hasError={Boolean(errors.serviceType)}
+                  {...register('serviceType', { required: 'Lütfen hizmeti seçin.' })}
+                >
+                  <option value="">Seçiniz</option>
+                  {serviceOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </Select>
+                {errors.serviceType?.message && <ErrorMessage>{errors.serviceType.message}</ErrorMessage>}
+              </FieldGroup>
 
-                    return true;
-                  },
-                })}
-              />
-              {errors.email?.message && (
-                <ErrorMessage role="alert">
-                  {errors.email.message}
-                </ErrorMessage>
-              )}
-            </FieldGroup>
-          </FormGrid>
-        </FormSection>
+              <FieldGroup>
+                <FieldLabel htmlFor="materials-option">
+                  Temizlik malzemesi
+                  {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
+                </FieldLabel>
+                <Select
+                  id="materials-option"
+                  $hasError={Boolean(errors.materialsOption)}
+                  {...register('materialsOption', {
+                    required: isHomeCleaning ? 'Temizlik malzemesi seçeneğini belirleyin.' : false,
+                  })}
+                >
+                  <option value="">Seçiniz</option>
+                  <option value="materials_excluded">Malzeme fiyata dahil değil</option>
+                  <option value="materials_included">Malzeme fiyata dahil</option>
+                </Select>
+                {errors.materialsOption?.message && <ErrorMessage>{errors.materialsOption.message}</ErrorMessage>}
+              </FieldGroup>
 
-        <FormSection>
-          <FormSectionHeader>
-            <FormSectionTitle>Hizmet detayları</FormSectionTitle>
-            <FormSectionDescription>
-              Teklifinizi doğru hazırlayabilmemiz için hizmet türünü ve alan
-              bilgilerini seçin.
-            </FormSectionDescription>
-          </FormSectionHeader>
+              <FieldGroup>
+                <FieldLabel htmlFor="area-sqm">
+                  Metrekare
+                  {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
+                </FieldLabel>
+                <Input
+                  id="area-sqm"
+                  type="number"
+                  placeholder="Örnek: 120"
+                  $hasError={Boolean(errors.areaSqm)}
+                  {...register('areaSqm', {
+                    required: isHomeCleaning ? 'Metrekare bilgisini girin.' : false,
+                  })}
+                />
+                {errors.areaSqm?.message && <ErrorMessage>{errors.areaSqm.message}</ErrorMessage>}
+              </FieldGroup>
+            </FormGrid>
+          </FormSection>
+        )}
 
-          <FormGrid>
-            <FieldGroup>
-              <FieldLabel htmlFor="service-type">
-                Hizmet
-                <RequiredMark>*</RequiredMark>
-              </FieldLabel>
-              <Select
-                id="service-type"
-                $hasError={Boolean(errors.serviceType)}
-                {...register('serviceType', {
-                  required: 'Lütfen almak istediğiniz hizmeti seçin.',
-                })}
-              >
-                <option value="">Seçiniz</option>
-                {serviceOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-              {errors.serviceType?.message && (
-                <ErrorMessage role="alert">
-                  {errors.serviceType.message}
-                </ErrorMessage>
-              )}
-            </FieldGroup>
+        {/* 3. ADIM: KONUM VE PLANLAMA */}
+        {currentStep === 3 && (
+          <FormSection>
+            <FormSectionHeader>
+              <FormSectionTitle>Konum ve planlama</FormSectionTitle>
+              <FormSectionDescription>
+                Hizmetin uygulanacağı bölgeyi ve zamanı paylaşın.
+              </FormSectionDescription>
+            </FormSectionHeader>
 
-            <FieldGroup>
-              <FieldLabel htmlFor="materials-option">
-                Temizlik malzemesi
-                {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
-              </FieldLabel>
-              <Select
-                id="materials-option"
-                $hasError={Boolean(errors.materialsOption)}
-                {...register('materialsOption', {
-                  required: isHomeCleaning
-                    ? 'Lütfen temizlik malzemesi seçeneğini belirleyin.'
-                    : false,
-                })}
-              >
-                <option value="">Seçiniz</option>
-                <option value="materials_excluded">
-                  Malzeme fiyata dahil değil
-                </option>
-                <option value="materials_included">
-                  Malzeme fiyata dahil
-                </option>
-              </Select>
-              {errors.materialsOption?.message && (
-                <ErrorMessage role="alert">
-                  {errors.materialsOption.message}
-                </ErrorMessage>
-              )}
-              <FieldHint>
-                {isHomeCleaning
-                  ? 'Ev Temizliği fiyatı metrekare ve bu tercihe göre hesaplanır.'
-                  : 'Bu hizmet için ayrı fiyat tablosu hazırlanacaktır; şimdilik varsa tercihinizi belirtebilirsiniz.'}
-              </FieldHint>
-            </FieldGroup>
+            <FormGrid>
+              <FieldGroup>
+                <FieldLabel htmlFor="province">İl <RequiredMark>*</RequiredMark></FieldLabel>
+                <Input
+                  id="province"
+                  type="text"
+                  placeholder="Örnek: Düzce"
+                  $hasError={Boolean(errors.province)}
+                  {...register('province', { required: 'İl bilgisi zorunludur.' })}
+                />
+                {errors.province?.message && <ErrorMessage>{errors.province.message}</ErrorMessage>}
+              </FieldGroup>
 
-            <FieldGroup>
-              <FieldLabel htmlFor="frequency">
-                Hizmet sıklığı
-                <OptionalMark>İsteğe bağlı</OptionalMark>
-              </FieldLabel>
-              <Select id="frequency" {...register('frequency')}>
-                <option value="">Belirtmek istemiyorum</option>
-                <option value="tek_seferlik">Tek seferlik</option>
-                <option value="haftalik">Haftalık</option>
-                <option value="iki_haftada_bir">İki haftada bir</option>
-                <option value="aylik">Aylık</option>
-              </Select>
-            </FieldGroup>
+              <FieldGroup>
+                <FieldLabel htmlFor="district">İlçe <RequiredMark>*</RequiredMark></FieldLabel>
+                <Input
+                  id="district"
+                  type="text"
+                  placeholder="Örnek: Merkez"
+                  $hasError={Boolean(errors.district)}
+                  {...register('district', { required: 'İlçe bilgisi zorunludur.' })}
+                />
+                {errors.district?.message && <ErrorMessage>{errors.district.message}</ErrorMessage>}
+              </FieldGroup>
 
-            <FieldGroup>
-              <FieldLabel htmlFor="area-sqm">
-                Metrekare
-                {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
-              </FieldLabel>
-              <Input
-                id="area-sqm"
-                type="number"
-                min="0"
-                step="0.1"
-                inputMode="decimal"
-                placeholder="Örnek: 120"
-                $hasError={Boolean(errors.areaSqm)}
-                {...register('areaSqm', {
-                  required: isHomeCleaning ? 'Lütfen metrekare bilgisini girin.' : false,
-                  validate: (value) => {
-                    if (!value.trim()) return true;
-                    return Number(value) > 0 || 'Metrekare 0’dan büyük olmalıdır.';
-                  },
-                })}
-              />
-              {errors.areaSqm?.message && (
-                <ErrorMessage role="alert">{errors.areaSqm.message}</ErrorMessage>
-              )}
-              <FieldHint>{isHomeCleaning ? 'Ev Temizliği için 0–500 m² fiyat tablosu uygulanır.' : 'Bu hizmet için fiyat tablosu ayrıca tanımlanacaktır.'}</FieldHint>
-            </FieldGroup>
+              <FieldGroup style={{ gridColumn: '1 / -1' }}>
+                <FieldLabel htmlFor="address-line">Açık adres <RequiredMark>*</RequiredMark></FieldLabel>
+                <Textarea
+                  id="address-line"
+                  rows={2}
+                  placeholder="Mahalle, sokak, bina ve kapı numarası"
+                  $hasError={Boolean(errors.addressLine)}
+                  {...register('addressLine', { required: 'Açık adres zorunludur.' })}
+                />
+                {errors.addressLine?.message && <ErrorMessage>{errors.addressLine.message}</ErrorMessage>}
+              </FieldGroup>
 
-            <FieldGroup>
-              <FieldLabel htmlFor="room-count">
-                Oda sayısı
-                <OptionalMark>İsteğe bağlı</OptionalMark>
-              </FieldLabel>
-              <Input
-                id="room-count"
-                type="number"
-                min="0"
-                step="1"
-                inputMode="numeric"
-                placeholder="Örnek: 3"
-                {...register('roomCount')}
-              />
-            </FieldGroup>
+              {/* Eklenen Tarih ve Saat Alanları */}
+              <FieldGroup>
+                <FieldLabel htmlFor="requested-date">
+                  Tercih edilen tarih <RequiredMark>*</RequiredMark>
+                </FieldLabel>
+                <Input
+                  id="requested-date"
+                  type="date"
+                  min={today}
+                  $hasError={Boolean(errors.requestedDate)}
+                  {...register('requestedDate', { required: 'Lütfen bir tarih seçin.' })}
+                />
+                {errors.requestedDate?.message && <ErrorMessage>{errors.requestedDate.message}</ErrorMessage>}
+              </FieldGroup>
 
-            <FieldGroup>
-              <FieldLabel htmlFor="floor-count">
-                Kat sayısı
-                <OptionalMark>İsteğe bağlı</OptionalMark>
-              </FieldLabel>
-              <Input
-                id="floor-count"
-                type="number"
-                min="0"
-                step="1"
-                inputMode="numeric"
-                placeholder="Örnek: 2"
-                {...register('floorCount')}
-              />
-            </FieldGroup>
+              <FieldGroup>
+                <FieldLabel htmlFor="preferred-time">
+                  Tercih edilen saat <RequiredMark>*</RequiredMark>
+                </FieldLabel>
+                <Input
+                  id="preferred-time"
+                  type="time"
+                  $hasError={Boolean(errors.preferredTime)}
+                  {...register('preferredTime', { required: 'Lütfen bir saat seçin.' })}
+                />
+                {errors.preferredTime?.message && <ErrorMessage>{errors.preferredTime.message}</ErrorMessage>}
+              </FieldGroup>
 
-            <FieldGroup style={{ gridColumn: '1 / -1' }}>
-              <FieldLabel>
-                Ek hizmetler
-                <OptionalMark>Birden fazla seçebilirsiniz</OptionalMark>
-              </FieldLabel>
-              <ServiceOptions role="group" aria-label="Ek hizmetler">
-                {extraOptions.map((option) => {
-                  const isSelected = selectedExtras.includes(option.value);
+            </FormGrid>
+          </FormSection>
+        )}
 
-                  return (
-                    <ServiceOptionButton
-                      key={option.value}
-                      type="button"
-                      $isSelected={isSelected}
-                      aria-pressed={isSelected}
-                      onClick={() => toggleExtra(option.value)}
-                    >
-                      <CheckCircle2 size={17} aria-hidden="true" />
-                      {option.label}
-                    </ServiceOptionButton>
-                  );
-                })}
-              </ServiceOptions>
-              <FieldHint>
-                Cam, koltuk, mutfak, banyo veya dolap içleri gibi ek ihtiyaçlarınızı
-                belirtebilirsiniz.
-              </FieldHint>
-            </FieldGroup>
-          </FormGrid>
-        </FormSection>
+        {/* 4. ADIM: NOT VE ONAY */}
+        {currentStep === 4 && (
+          <>
+            <FormSection>
+              <FormSectionHeader>
+                <FormSectionTitle>Talep notunuz & Onay</FormSectionTitle>
+                <FormSectionDescription>
+                  İhtiyacınızı kısaca anlatın ve izinleri onaylayın.
+                </FormSectionDescription>
+              </FormSectionHeader>
 
-        <FormSection>
-          <FormSectionHeader>
-            <FormSectionTitle>Konum ve planlama</FormSectionTitle>
-            <FormSectionDescription>
-              Hizmetin uygulanacağı bölgeyi ve sizin için uygun zamanı paylaşın.
-            </FormSectionDescription>
-          </FormSectionHeader>
+              <FieldGroup>
+                <FieldLabel htmlFor="message">Notunuz <RequiredMark>*</RequiredMark></FieldLabel>
+                <Textarea
+                  id="message"
+                  rows={4}
+                  placeholder="Beklentilerinizi veya ek bilgileri yazın."
+                  $hasError={Boolean(errors.message)}
+                  {...register('message', { required: 'Lütfen talebinizi açıklayın.' })}
+                />
+                {errors.message?.message && <ErrorMessage>{errors.message.message}</ErrorMessage>}
+              </FieldGroup>
+            </FormSection>
 
-          <FormGrid>
-            <FieldGroup>
-              <FieldLabel htmlFor="province">
-                İl
-                <RequiredMark>*</RequiredMark>
-              </FieldLabel>
-              <Input
-                id="province"
-                type="text"
-                autoComplete="address-level1"
-                placeholder="Örnek: Düzce"
-                $hasError={Boolean(errors.province)}
-                {...register('province', {
-                  required: 'Lütfen il bilgisini girin.',
-                  minLength: {
-                    value: 2,
-                    message: 'Lütfen geçerli bir il adı girin.',
-                  },
-                })}
-              />
-              {errors.province?.message && (
-                <ErrorMessage role="alert">
-                  {errors.province.message}
-                </ErrorMessage>
-              )}
-            </FieldGroup>
+            <FormSection>
+              <CheckboxContainer $hasError={Boolean(errors.serviceConsent)}>
+                <Checkbox
+                  id={serviceConsentId}
+                  type="checkbox"
+                  {...register('serviceConsent', { required: 'İletişim izni gereklidir.' })}
+                />
+                <CheckboxLabel htmlFor={serviceConsentId}>
+                  Hizmet talebim hakkında benimle iletişim kurulmasını kabul ediyorum. <RequiredMark>*</RequiredMark>
+                </CheckboxLabel>
+              </CheckboxContainer>
+              {errors.serviceConsent?.message && <ErrorMessage>{errors.serviceConsent.message}</ErrorMessage>}
 
-            <FieldGroup>
-              <FieldLabel htmlFor="district">
-                İlçe
-                <RequiredMark>*</RequiredMark>
-              </FieldLabel>
-              <Input
-                id="district"
-                type="text"
-                autoComplete="address-level2"
-                placeholder="Örnek: Merkez"
-                $hasError={Boolean(errors.district)}
-                {...register('district', {
-                  required: 'Lütfen ilçe bilgisini girin.',
-                  minLength: {
-                    value: 2,
-                    message: 'Lütfen geçerli bir ilçe adı girin.',
-                  },
-                })}
-              />
-              {errors.district?.message && (
-                <ErrorMessage role="alert">
-                  {errors.district.message}
-                </ErrorMessage>
-              )}
-            </FieldGroup>
-
-            <FieldGroup style={{ gridColumn: '1 / -1' }}>
-              <FieldLabel htmlFor="address-line">
-                Açık adres
-                <OptionalMark>Randevu öncesi gerekli</OptionalMark>
-              </FieldLabel>
-              <Textarea
-                id="address-line"
-                rows={3}
-                autoComplete="street-address"
-                placeholder="Mahalle, sokak, bina ve kapı numarası"
-                {...register('addressLine')}
-              />
-              <FieldHint>
-                İlk teklif değerlendirmesi için boş bırakabilirsiniz.
-              </FieldHint>
-            </FieldGroup>
-
-            <FieldGroup>
-              <FieldLabel htmlFor="requested-date">
-                Tercih edilen tarih
-                <OptionalMark>İsteğe bağlı</OptionalMark>
-              </FieldLabel>
-              <Input
-                id="requested-date"
-                type="date"
-                min={today}
-                {...register('requestedDate')}
-              />
-            </FieldGroup>
-
-            <FieldGroup>
-              <FieldLabel htmlFor="preferred-time">
-                Tercih edilen saat
-                <OptionalMark>İsteğe bağlı</OptionalMark>
-              </FieldLabel>
-              <Input
-                id="preferred-time"
-                type="time"
-                {...register('preferredTime')}
-              />
-            </FieldGroup>
-          </FormGrid>
-        </FormSection>
-
-        <FormSection>
-          <FormSectionHeader>
-            <FormSectionTitle>Talep notunuz</FormSectionTitle>
-            <FormSectionDescription>
-              İhtiyacınızı kısaca anlatmanız, ekibimizin daha hazırlıklı dönmesini
-              sağlar.
-            </FormSectionDescription>
-          </FormSectionHeader>
-
-          <FieldGroup>
-            <FieldLabel htmlFor="message">
-              Notunuz
-              <RequiredMark>*</RequiredMark>
-            </FieldLabel>
-            <Textarea
-              id="message"
-              rows={5}
-              placeholder="Temizlik ihtiyacınızı, özel beklentilerinizi veya eklemek istediğiniz bilgileri yazın."
-              $hasError={Boolean(errors.message)}
-              {...register('message', {
-                required: 'Lütfen talebinizi kısaca açıklayın.',
-                minLength: {
-                  value: 10,
-                  message: 'Lütfen en az 10 karakterlik bir açıklama yazın.',
-                },
-              })}
-            />
-            {errors.message?.message && (
-              <ErrorMessage role="alert">
-                {errors.message.message}
-              </ErrorMessage>
-            )}
-          </FieldGroup>
-        </FormSection>
-
-        <FormSection>
-          <FormSectionHeader>
-            <FormSectionTitle>İletişim izinleri</FormSectionTitle>
-            <FormSectionDescription>
-              Bilgileriniz yalnızca talebinizi değerlendirmek ve size dönüş yapmak
-              için kullanılır.
-            </FormSectionDescription>
-          </FormSectionHeader>
-
-          <CheckboxContainer $hasError={Boolean(errors.serviceConsent)}>
-            <Checkbox
-              id={serviceConsentId}
-              type="checkbox"
-              {...register('serviceConsent', {
-                required: 'Talebiniz için iletişim izni gereklidir.',
-              })}
-            />
-            <CheckboxLabel htmlFor={serviceConsentId}>
-              Hizmet talebim hakkında benimle telefon veya e-posta yoluyla
-              iletişim kurulmasını kabul ediyorum.
-              <RequiredMark>*</RequiredMark>
-            </CheckboxLabel>
-          </CheckboxContainer>
-          {errors.serviceConsent?.message && (
-            <ErrorMessage role="alert">
-              {errors.serviceConsent.message}
-            </ErrorMessage>
-          )}
-
-          <CheckboxContainer>
-            <Checkbox
-              id={marketingConsentId}
-              type="checkbox"
-              {...register('marketingConsent')}
-            />
-            <CheckboxLabel htmlFor={marketingConsentId}>
-              Kampanya ve duyuru mesajları almak istiyorum.
-            </CheckboxLabel>
-          </CheckboxContainer>
-        </FormSection>
+              <CheckboxContainer>
+                <Checkbox id={marketingConsentId} type="checkbox" {...register('marketingConsent')} />
+                <CheckboxLabel htmlFor={marketingConsentId}>
+                  Kampanya ve duyuru mesajları almak istiyorum.
+                </CheckboxLabel>
+              </CheckboxContainer>
+            </FormSection>
+          </>
+        )}
 
         {status && (
-          <StatusMessage
-            $status={status.type}
-            role="status"
-            aria-live="polite"
-          >
-            {status.type === 'success' ? (
-              <CheckCircle2 size={19} aria-hidden="true" />
-            ) : (
-              <Send size={19} aria-hidden="true" />
-            )}
+          <StatusMessage $status={status.type} role="status">
+            {status.type === 'success' ? <CheckCircle2 size={19} /> : <Send size={19} />}
             <span>{status.message}</span>
           </StatusMessage>
         )}
 
-        <SubmitButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <LoaderCircle size={19} aria-hidden="true" />
-          ) : (
-            <Send size={19} aria-hidden="true" />
+        {/* YÖNLENDİRME BUTONLARI */}
+        <FormActions>
+          {currentStep > 1 && (
+            <BackButton type="button" onClick={handlePrev}>
+              <ChevronLeft size={18} /> Geri
+            </BackButton>
           )}
-          {isSubmitting ? 'Gönderiliyor...' : 'Talep gönder'}
-        </SubmitButton>
+          
+          {currentStep < STEPS.length ? (
+            <NextButton type="button" onClick={handleNext}>
+              İleri <ChevronRight size={18} />
+            </NextButton>
+          ) : (
+            <SubmitButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? <LoaderCircle size={19} className="animate-spin" /> : <Send size={19} />}
+              {isSubmitting ? 'Gönderiliyor...' : 'Talebi Gönder'}
+            </SubmitButton>
+          )}
+        </FormActions>
 
-        <FormTrustList>
-          <FormTrustItem>
-            <ShieldCheck size={14} aria-hidden="true" />
-            Bilgileriniz korunur
-          </FormTrustItem>
-          <FormTrustItem>
-            <Clock3 size={14} aria-hidden="true" />
-            Hızlı geri dönüş
-          </FormTrustItem>
-        </FormTrustList>
+        {currentStep === STEPS.length && (
+          <FormTrustList style={{ marginTop: '16px' }}>
+            <FormTrustItem><ShieldCheck size={14} /> Bilgileriniz korunur</FormTrustItem>
+            <FormTrustItem><Clock3 size={14} /> Hızlı geri dönüş</FormTrustItem>
+          </FormTrustList>
+        )}
       </Form>
     </FormCard>
   );

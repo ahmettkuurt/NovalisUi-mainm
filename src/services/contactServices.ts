@@ -4,7 +4,7 @@ import type {
 } from '../types/contact';
 
 const DEFAULT_WEB_FORM_ENDPOINT =
-  'https://song-tenant-camel-serve.trycloudflare.com/webhook-test/web-form-intake-postgres';
+  'https://otomasyon.novaliscleaning.com/webhook-test/web-form-intake-postgres';
 
 const WEB_FORM_ENDPOINT =
   import.meta.env.VITE_WEB_FORM_ENDPOINT?.trim() ||

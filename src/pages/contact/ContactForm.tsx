@@ -132,6 +132,11 @@ function ContactForm() {
     control,
     name: 'email',
   });
+  const selectedServiceType = useWatch({
+    control,
+    name: 'serviceType',
+  });
+  const isHomeCleaning = selectedServiceType === 'ev_temizligi';
 
   const toggleExtra = (value: string) => {
     const nextExtras = selectedExtras.includes(value)
@@ -328,13 +333,15 @@ function ContactForm() {
             <FieldGroup>
               <FieldLabel htmlFor="materials-option">
                 Temizlik malzemesi
-                <RequiredMark>*</RequiredMark>
+                {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
               </FieldLabel>
               <Select
                 id="materials-option"
                 $hasError={Boolean(errors.materialsOption)}
                 {...register('materialsOption', {
-                  required: 'Lütfen temizlik malzemesi seçeneğini belirleyin.',
+                  required: isHomeCleaning
+                    ? 'Lütfen temizlik malzemesi seçeneğini belirleyin.'
+                    : false,
                 })}
               >
                 <option value="">Seçiniz</option>
@@ -351,7 +358,9 @@ function ContactForm() {
                 </ErrorMessage>
               )}
               <FieldHint>
-                Fiyat, yalnızca metrekare ve bu tercihe göre hesaplanır; hizmet türü fiyatı değiştirmez.
+                {isHomeCleaning
+                  ? 'Ev Temizliği fiyatı metrekare ve bu tercihe göre hesaplanır.'
+                  : 'Bu hizmet için ayrı fiyat tablosu hazırlanacaktır; şimdilik varsa tercihinizi belirtebilirsiniz.'}
               </FieldHint>
             </FieldGroup>
 
@@ -372,7 +381,7 @@ function ContactForm() {
             <FieldGroup>
               <FieldLabel htmlFor="area-sqm">
                 Metrekare
-                <RequiredMark>*</RequiredMark>
+                {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
               </FieldLabel>
               <Input
                 id="area-sqm"
@@ -383,14 +392,17 @@ function ContactForm() {
                 placeholder="Örnek: 120"
                 $hasError={Boolean(errors.areaSqm)}
                 {...register('areaSqm', {
-                  required: 'Lütfen metrekare bilgisini girin.',
-                  validate: (value) => Number(value) > 0 || 'Metrekare 0’dan büyük olmalıdır.',
+                  required: isHomeCleaning ? 'Lütfen metrekare bilgisini girin.' : false,
+                  validate: (value) => {
+                    if (!value.trim()) return true;
+                    return Number(value) > 0 || 'Metrekare 0’dan büyük olmalıdır.';
+                  },
                 })}
               />
               {errors.areaSqm?.message && (
                 <ErrorMessage role="alert">{errors.areaSqm.message}</ErrorMessage>
               )}
-              <FieldHint>0–500 m² arasındaki fiyat tablosu uygulanır.</FieldHint>
+              <FieldHint>{isHomeCleaning ? 'Ev Temizliği için 0–500 m² fiyat tablosu uygulanır.' : 'Bu hizmet için fiyat tablosu ayrıca tanımlanacaktır.'}</FieldHint>
             </FieldGroup>
 
             <FieldGroup>

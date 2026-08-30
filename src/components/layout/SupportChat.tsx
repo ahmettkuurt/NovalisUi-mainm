@@ -283,7 +283,7 @@ function SupportChat() {
             <QuickContactTitle>{t('supportChat.quickTitle')}</QuickContactTitle>
             <span>{t('supportChat.quickText')}</span>
           </QuickContactText>
-          <QuickContactLink href="tel:+908501234567">
+          <QuickContactLink href="tel:+905360310081" aria-label={t('supportChat.callUs')}>
             {t('supportChat.callUs')}
           </QuickContactLink>
         </QuickContactRow>

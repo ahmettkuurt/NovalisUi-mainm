@@ -36,9 +36,9 @@ import {
   ResponseBadgeTitle,
 } from './ContactPageStyles';
 
-const PHONE_NUMBER = '0850 123 45 67';
-const PHONE_LINK = 'tel:+908501234567';
-const WHATSAPP_LINK = 'https://wa.me/908501234567';
+const PHONE_NUMBER = '0536 031 00 81';
+const PHONE_LINK = 'tel:+905360310081';
+const WHATSAPP_LINK = 'https://wa.me/905360310081?text=Merhaba%2C%20temizlik%20hizmeti%20ile%20ilgileniyorum.%20Daha%20fazla%20bilgi%20almak%20istiyorum.';
 
 function ContactPage() {
   return (

@@ -23,18 +23,18 @@ export const ChatShell = styled.div`
 
 export const ChatButton = styled.button<{ $isOpen: boolean }>`
   position: fixed;
-  right: 18px;
-  bottom: 78px;
+  right: 96px;
+  bottom: 20px;
   z-index: 1101;
   display: inline-flex;
   min-width: 150px;
-  height: 48px;
-  padding: 0 16px;
-  border: 1px solid rgba(255, 255, 255, 0.86);
-  border-radius: ${({ theme }) => theme.borderRadius.rounded};
+  height: 54px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
   background: ${({ theme, $isOpen }) =>
-    $isOpen ? theme.colors.primaryDark : theme.colors.primary};
-  box-shadow: 0 12px 28px rgba(24, 63, 73, 0.2);
+    $isOpen ? theme.colors.primaryDark : 'linear-gradient(135deg, #0f3b48 0%, #0d8ca6 100%)'};
+  box-shadow: 0 16px 30px rgba(15, 59, 72, 0.22);
   color: ${({ theme }) => theme.colors.textWhite};
   align-items: center;
   justify-content: center;
@@ -47,10 +47,10 @@ export const ChatButton = styled.button<{ $isOpen: boolean }>`
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
-    background-color 180ms ease;
+    background 180ms ease;
 
   &:hover {
-    box-shadow: 0 16px 34px rgba(24, 63, 73, 0.26);
+    box-shadow: 0 20px 36px rgba(15, 59, 72, 0.3);
     transform: translateY(-2px);
   }
 
@@ -64,8 +64,8 @@ export const ChatButton = styled.button<{ $isOpen: boolean }>`
   }
 
   @media (max-width: 560px) {
-    right: 13px;
-    bottom: 67px;
+    right: 74px;
+    bottom: 14px;
     min-width: 48px;
     width: 48px;
     height: 48px;
@@ -82,7 +82,7 @@ export const ChatButtonLabel = styled.span`
 export const ChatPanel = styled.section<{ $isOpen: boolean }>`
   position: fixed;
   right: 18px;
-  bottom: 138px;
+  bottom: 88px;
   z-index: 1100;
   display: flex;
   width: min(390px, calc(100vw - 36px));

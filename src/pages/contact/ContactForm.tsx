@@ -20,7 +20,6 @@ import {
   CheckboxLabel,
   ErrorMessage,
   FieldGroup,
-  FieldHint,
   FieldLabel,
   Form,
   FormActions,
@@ -37,7 +36,6 @@ import {
   FormTrustList,
   Input,
   NextButton,
-  OptionalMark,
   RequiredMark,
   Select,
   StatusMessage,
@@ -88,7 +86,11 @@ const defaultValues: ContactFormData = {
 const today = new Date().toISOString().slice(0, 10);
 
 // Adımları ve doğrulayacak alanları tanımlıyoruz
-const STEPS = [
+const STEPS: Array<{
+  id: number;
+  title: string;
+  fields: Array<keyof ContactFormData>;
+}> = [
   { id: 1, title: 'İletişim', fields: ['fullName', 'phone', 'email'] },
   { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm'] },
   { id: 3, title: 'Konum', fields: ['province', 'district', 'addressLine', 'requestedDate', 'preferredTime'] },
@@ -119,13 +121,13 @@ function ContactForm() {
     control,
     name: 'serviceType',
   });
-  const isHomeCleaning = selectedServiceType === 'Ev_Temizligi';
+  const isHomeCleaning = selectedServiceType === 'Apartman_Ortak_Alan_Temizligi';
 
   const handleNext = async () => {
     // Sadece mevcut adımın alanlarını doğrula
-    const stepFields = STEPS[currentStep - 1].fields as any;
+    const stepFields = STEPS[currentStep - 1].fields;
     const isStepValid = await trigger(stepFields);
-    
+
     if (isStepValid) {
       setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
     }
@@ -276,13 +278,13 @@ function ContactForm() {
               <FieldGroup>
                 <FieldLabel htmlFor="materials-option">
                   Temizlik malzemesi
-                  {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
+                  <RequiredMark>*</RequiredMark> 
                 </FieldLabel>
                 <Select
                   id="materials-option"
                   $hasError={Boolean(errors.materialsOption)}
                   {...register('materialsOption', {
-                    required: isHomeCleaning ? 'Temizlik malzemesi seçeneğini belirleyin.' : false,
+                    required:'Temizlik malzemesi seçeneğini belirleyin.',
                   })}
                 >
                   <option value="">Seçiniz</option>
@@ -294,8 +296,8 @@ function ContactForm() {
 
               <FieldGroup>
                 <FieldLabel htmlFor="area-sqm">
-                  Metrekare
-                  {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
+                  {isHomeCleaning ? 'Daire Sayısı' : 'Metrekare' }
+                 <RequiredMark>*</RequiredMark>
                 </FieldLabel>
                 <Input
                   id="area-sqm"
@@ -303,7 +305,7 @@ function ContactForm() {
                   placeholder="Örnek: 120"
                   $hasError={Boolean(errors.areaSqm)}
                   {...register('areaSqm', {
-                    required: isHomeCleaning ? 'Metrekare bilgisini girin.' : false,
+                    required: isHomeCleaning ? 'Daire sayısını girin.' : 'Metrekare bilgisini girin.',
                   })}
                 />
                 {errors.areaSqm?.message && <ErrorMessage>{errors.areaSqm.message}</ErrorMessage>}

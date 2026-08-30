@@ -314,7 +314,10 @@ export const FormCard = styled.section`
   padding: 34px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 24px;
-  background: ${({ theme }) => theme.colors.background};
+  background: radial-gradient(circle at top right, rgba(73, 170, 183, 0.16), transparent 35%),
+    linear-gradient(150deg,
+      ${({ theme }) => theme.colors.backgroundSoft},
+      ${({ theme }) => theme.colors.background});
   box-shadow: 0 24px 70px rgba(15, 61, 70, 0.09);
   animation: ${fadeRight} 800ms ease 220ms both;
   ${reducedMotion}

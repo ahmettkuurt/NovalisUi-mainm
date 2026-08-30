@@ -165,15 +165,15 @@ export const LegalLinks = styled.div`
 export const WhatsAppButton = styled.a`
   position: fixed;
   right: 18px;
-  bottom: 18px;
+  bottom: 20px;
   z-index: 900;
   display: inline-flex;
-  width: 46px;
-  height: 46px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  background-color: #25d366;
-  box-shadow: 0 8px 22px rgba(15, 59, 72, 0.24);
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #21c45d 0%, #25d366 100%);
+  box-shadow: 0 16px 30px rgba(37, 211, 102, 0.28);
   color: #ffffff;
   align-items: center;
   justify-content: center;
@@ -182,15 +182,16 @@ export const WhatsAppButton = styled.a`
     box-shadow 180ms ease;
 
   &:hover {
-    box-shadow: 0 12px 28px rgba(15, 59, 72, 0.3);
+    box-shadow: 0 20px 36px rgba(37, 211, 102, 0.32);
     transform: translateY(-2px);
   }
 
   @media (max-width: 480px) {
-    right: 13px;
-    bottom: 13px;
-    width: 44px;
-    height: 44px;
+    right: 14px;
+    bottom: 14px;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
   }
 `;
 export const SocialLinks = styled.div`

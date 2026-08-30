@@ -65,13 +65,13 @@ function Footer() {
             </FooterNavigation>
 
             <ContactList>
-              <ContactLink href="tel:+908501234567">
+              <ContactLink href="tel:+9">
                 <Phone
                   size={15}
                   aria-hidden="true"
                 />
 
-                0850 123 45 67
+                0536 031 00 81
               </ContactLink>
 
               <ContactLink href="mailto:info@novalistemizlik.com">
@@ -156,7 +156,7 @@ function Footer() {
       </FooterContainer>
 
       <WhatsAppButton
-        href="https://wa.me/908501234567"
+        href="https://wa.me/905360310081?text=Merhaba%2C%20temizlik%20hizmeti%20ile%20ilgileniyorum.%20Daha%20fazla%20bilgi%20almak%20istiyorum."
         target="_blank"
         rel="noreferrer"
         aria-label={t('footer.whatsappAriaLabel')}

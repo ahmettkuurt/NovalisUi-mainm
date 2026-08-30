@@ -61,7 +61,7 @@ import {
   TrustTitle,
 } from './ServicesPageStyles';
 
-const WHATSAPP_URL = 'https://wa.me/905000000000';
+const WHATSAPP_URL = 'https://wa.me/905360310081?text=Merhaba%2C%20temizlik%20hizmeti%20ile%20ilgileniyorum.%20Daha%20fazla%20bilgi%20almak%20istiyorum.';
 
 const defaultServiceFeatureKeys = [
   'servicesPage.modal.features.professionalTeam',

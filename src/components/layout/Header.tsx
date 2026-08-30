@@ -39,8 +39,8 @@ import {
   QuoteLink,
 } from './HeaderStyles';
 
-const PHONE_NUMBER = '0850 123 45 67';
-const PHONE_LINK = 'tel:+908501234567';
+const PHONE_NUMBER = '0536 031 00 81';
+const PHONE_LINK = 'tel:+905360310081';
 
 const DESKTOP_BREAKPOINT = 1024;
 const SCROLL_THRESHOLD = 20;

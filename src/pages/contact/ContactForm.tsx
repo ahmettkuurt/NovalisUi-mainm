@@ -20,6 +20,7 @@ import {
   CheckboxLabel,
   ErrorMessage,
   FieldGroup,
+  FieldHint,
   FieldLabel,
   Form,
   FormActions,
@@ -72,6 +73,7 @@ const defaultValues: ContactFormData = {
   district: '',
   addressLine: '',
   areaSqm: '',
+  unitCount: '',
   roomCount: '',
   floorCount: '',
   requestedDate: '',
@@ -92,7 +94,7 @@ const STEPS: Array<{
   fields: Array<keyof ContactFormData>;
 }> = [
   { id: 1, title: 'İletişim', fields: ['fullName', 'phone', 'email'] },
-  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm'] },
+  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm', 'unitCount'] },
   { id: 3, title: 'Konum', fields: ['province', 'district', 'addressLine', 'requestedDate', 'preferredTime'] },
   { id: 4, title: 'Onay', fields: ['message', 'serviceConsent', 'marketingConsent'] },
 ];
@@ -121,7 +123,11 @@ function ContactForm() {
     control,
     name: 'serviceType',
   });
-  const isHomeCleaning = selectedServiceType === 'Apartman_Ortak_Alan_Temizligi';
+  const isHomeCleaning = selectedServiceType === 'Ev_Temizligi';
+  const isOfficeCleaning = selectedServiceType === 'Ofis_Temizligi';
+  const isConstructionCleaning = selectedServiceType === 'Insaat_Sonrasi_Temizlik';
+  const isApartmentCleaning = selectedServiceType === 'Apartman_Ortak_Alan_Temizligi';
+  const isMeteredCleaning = isHomeCleaning || isOfficeCleaning || isConstructionCleaning;
 
   const handleNext = async () => {
     // Sadece mevcut adımın alanlarını doğrula
@@ -294,22 +300,51 @@ function ContactForm() {
                 {errors.materialsOption?.message && <ErrorMessage>{errors.materialsOption.message}</ErrorMessage>}
               </FieldGroup>
 
-              <FieldGroup>
-                <FieldLabel htmlFor="area-sqm">
-                  {isHomeCleaning ? 'Daire Sayısı' : 'Metrekare' }
-                 <RequiredMark>*</RequiredMark>
-                </FieldLabel>
-                <Input
-                  id="area-sqm"
-                  type="number"
-                  placeholder="Örnek: 120"
-                  $hasError={Boolean(errors.areaSqm)}
-                  {...register('areaSqm', {
-                    required: isHomeCleaning ? 'Daire sayısını girin.' : 'Metrekare bilgisini girin.',
-                  })}
-                />
-                {errors.areaSqm?.message && <ErrorMessage>{errors.areaSqm.message}</ErrorMessage>}
-              </FieldGroup>
+              {!isApartmentCleaning && (
+                <FieldGroup>
+                  <FieldLabel htmlFor="area-sqm">
+                    Metrekare <RequiredMark>*</RequiredMark>
+                  </FieldLabel>
+                  <Input
+                    id="area-sqm"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    inputMode="decimal"
+                    placeholder="Örnek: 120"
+                    $hasError={Boolean(errors.areaSqm)}
+                    {...register('areaSqm', {
+                      required: isMeteredCleaning ? 'Metrekare bilgisini girin.' : false,
+                      validate: (value) => !value.trim() || Number(value) > 0 || 'Metrekare 0’dan büyük olmalıdır.',
+                    })}
+                  />
+                  {errors.areaSqm?.message && <ErrorMessage>{errors.areaSqm.message}</ErrorMessage>}
+                  <FieldHint>Ev, Ofis ve İnşaat Sonrası hizmetlerinde 0–500 m² fiyat tablosu uygulanır.</FieldHint>
+                </FieldGroup>
+              )}
+
+              {isApartmentCleaning && (
+                <FieldGroup>
+                  <FieldLabel htmlFor="unit-count">
+                    Daire sayısı <RequiredMark>*</RequiredMark>
+                  </FieldLabel>
+                  <Input
+                    id="unit-count"
+                    type="number"
+                    min="1"
+                    step="1"
+                    inputMode="numeric"
+                    placeholder="Örnek: 10"
+                    $hasError={Boolean(errors.unitCount)}
+                    {...register('unitCount', {
+                      required: 'Daire sayısını girin.',
+                      validate: (value) => Number(value) >= 1 || 'Daire sayısı en az 1 olmalıdır.',
+                    })}
+                  />
+                  {errors.unitCount?.message && <ErrorMessage>{errors.unitCount.message}</ErrorMessage>}
+                  <FieldHint>Daire başına malzemesiz 600 TL, malzemeli 800 TL uygulanır.</FieldHint>
+                </FieldGroup>
+              )}
             </FormGrid>
           </FormSection>
         )}

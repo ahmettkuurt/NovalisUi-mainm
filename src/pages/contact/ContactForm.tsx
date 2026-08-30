@@ -74,6 +74,7 @@ const defaultValues: ContactFormData = {
   district: '',
   addressLine: '',
   areaSqm: '',
+  serviceDays: '',
   roomCount: '',
   floorCount: '',
   requestedDate: '',
@@ -90,7 +91,7 @@ const today = new Date().toISOString().slice(0, 10);
 // Adımları ve doğrulayacak alanları tanımlıyoruz
 const STEPS = [
   { id: 1, title: 'İletişim', fields: ['fullName', 'phone', 'email'] },
-  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm'] },
+  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm', 'serviceDays'] },
   { id: 3, title: 'Konum', fields: ['province', 'district', 'addressLine', 'requestedDate', 'preferredTime'] },
   { id: 4, title: 'Onay', fields: ['message', 'serviceConsent', 'marketingConsent'] },
 ];
@@ -120,6 +121,11 @@ function ContactForm() {
     name: 'serviceType',
   });
   const isHomeCleaning = selectedServiceType === 'Ev_Temizligi';
+  const isOfficeCleaning = selectedServiceType === 'Ofis_Temizligi';
+  const isConstructionCleaning = selectedServiceType === 'Insaat_Sonrasi_Temizlik';
+  const isApartmentCleaning = selectedServiceType === 'Apartman_Ortak_Alan_Temizligi';
+  const isMeteredCleaning = isHomeCleaning || isOfficeCleaning || isConstructionCleaning;
+  const requiresMaterials = isMeteredCleaning || isApartmentCleaning;
 
   const handleNext = async () => {
     // Sadece mevcut adımın alanlarını doğrula
@@ -276,13 +282,13 @@ function ContactForm() {
               <FieldGroup>
                 <FieldLabel htmlFor="materials-option">
                   Temizlik malzemesi
-                  {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
+                  {requiresMaterials ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
                 </FieldLabel>
                 <Select
                   id="materials-option"
                   $hasError={Boolean(errors.materialsOption)}
                   {...register('materialsOption', {
-                    required: isHomeCleaning ? 'Temizlik malzemesi seçeneğini belirleyin.' : false,
+                    required: requiresMaterials ? 'Temizlik malzemesi seçeneğini belirleyin.' : false,
                   })}
                 >
                   <option value="">Seçiniz</option>
@@ -295,19 +301,44 @@ function ContactForm() {
               <FieldGroup>
                 <FieldLabel htmlFor="area-sqm">
                   Metrekare
-                  {isHomeCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
+                  {isMeteredCleaning ? <RequiredMark>*</RequiredMark> : <OptionalMark>İsteğe bağlı</OptionalMark>}
                 </FieldLabel>
                 <Input
                   id="area-sqm"
                   type="number"
+                  min="0"
+                  step="0.1"
                   placeholder="Örnek: 120"
                   $hasError={Boolean(errors.areaSqm)}
                   {...register('areaSqm', {
-                    required: isHomeCleaning ? 'Metrekare bilgisini girin.' : false,
+                    required: isMeteredCleaning ? 'Metrekare bilgisini girin.' : false,
+                    validate: (value) => !value.trim() || Number(value) > 0 || 'Metrekare 0’dan büyük olmalıdır.',
                   })}
                 />
                 {errors.areaSqm?.message && <ErrorMessage>{errors.areaSqm.message}</ErrorMessage>}
               </FieldGroup>
+
+              {isApartmentCleaning && (
+                <FieldGroup>
+                  <FieldLabel htmlFor="service-days">
+                    Günlük hizmet adedi <RequiredMark>*</RequiredMark>
+                  </FieldLabel>
+                  <Input
+                    id="service-days"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="Örnek: 4"
+                    $hasError={Boolean(errors.serviceDays)}
+                    {...register('serviceDays', {
+                      required: 'Lütfen günlük hizmet adedini girin.',
+                      validate: (value) => Number(value) >= 1 || 'Günlük hizmet adedi en az 1 olmalıdır.',
+                    })}
+                  />
+                  {errors.serviceDays?.message && <ErrorMessage>{errors.serviceDays.message}</ErrorMessage>}
+                  <FieldHint>Her gün için malzemesiz 600 TL, malzemeli 800 TL uygulanır.</FieldHint>
+                </FieldGroup>
+              )}
             </FormGrid>
           </FormSection>
         )}

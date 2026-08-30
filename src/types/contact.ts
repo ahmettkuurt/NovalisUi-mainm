@@ -26,6 +26,7 @@ export interface ContactFormData {
   district: string;
   addressLine: string;
   areaSqm: string;
+  serviceDays: string;
   roomCount: string;
   floorCount: string;
   requestedDate: string;

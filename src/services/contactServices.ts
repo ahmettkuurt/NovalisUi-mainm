@@ -57,6 +57,8 @@ const buildPayload = (
   district: formData.district.trim(),
   address_line: formData.addressLine.trim() || null,
   area_sqm: nullableNumber(formData.areaSqm),
+  service_days: nullableNumber(formData.serviceDays),
+  duration_days: nullableNumber(formData.serviceDays),
   room_count: nullableNumber(formData.roomCount),
   floor_count: nullableNumber(formData.floorCount),
   requested_date: formData.requestedDate || null,

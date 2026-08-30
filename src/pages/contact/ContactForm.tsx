@@ -74,7 +74,7 @@ const defaultValues: ContactFormData = {
   district: '',
   addressLine: '',
   areaSqm: '',
-  serviceDays: '',
+  unitCount: '',
   roomCount: '',
   floorCount: '',
   requestedDate: '',
@@ -91,7 +91,7 @@ const today = new Date().toISOString().slice(0, 10);
 // Adımları ve doğrulayacak alanları tanımlıyoruz
 const STEPS = [
   { id: 1, title: 'İletişim', fields: ['fullName', 'phone', 'email'] },
-  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm', 'serviceDays'] },
+  { id: 2, title: 'Hizmet', fields: ['serviceType', 'materialsOption', 'areaSqm', 'unitCount'] },
   { id: 3, title: 'Konum', fields: ['province', 'district', 'addressLine', 'requestedDate', 'preferredTime'] },
   { id: 4, title: 'Onay', fields: ['message', 'serviceConsent', 'marketingConsent'] },
 ];
@@ -321,22 +321,22 @@ function ContactForm() {
               {isApartmentCleaning && (
                 <FieldGroup>
                   <FieldLabel htmlFor="service-days">
-                    Günlük hizmet adedi <RequiredMark>*</RequiredMark>
+                    Daire sayısı <RequiredMark>*</RequiredMark>
                   </FieldLabel>
                   <Input
-                    id="service-days"
+                    id="unit-count"
                     type="number"
                     min="1"
                     step="1"
                     placeholder="Örnek: 4"
-                    $hasError={Boolean(errors.serviceDays)}
-                    {...register('serviceDays', {
-                      required: 'Lütfen günlük hizmet adedini girin.',
-                      validate: (value) => Number(value) >= 1 || 'Günlük hizmet adedi en az 1 olmalıdır.',
+                    $hasError={Boolean(errors.unitCount)}
+                    {...register('unitCount', {
+                      required: 'Lütfen daire sayısını girin.',
+                      validate: (value) => Number(value) >= 1 || 'Daire sayısı en az 1 olmalıdır.',
                     })}
                   />
-                  {errors.serviceDays?.message && <ErrorMessage>{errors.serviceDays.message}</ErrorMessage>}
-                  <FieldHint>Her gün için malzemesiz 600 TL, malzemeli 800 TL uygulanır.</FieldHint>
+                  {errors.unitCount?.message && <ErrorMessage>{errors.unitCount.message}</ErrorMessage>}
+                  <FieldHint>Daire başına malzemesiz 600 TL, malzemeli 800 TL uygulanır.</FieldHint>
                 </FieldGroup>
               )}
             </FormGrid>

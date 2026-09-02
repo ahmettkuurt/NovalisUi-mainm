@@ -85,7 +85,46 @@ const defaultValues: ContactFormData = {
   marketingConsent: false,
 };
 
-const today = new Date().toISOString().slice(0, 10);
+const formatDateInput = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const now = new Date();
+const minDateObject = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+// Bir ay sonrasını ay sonuna taşma olmadan hesapla (ör. 31 Ocak -> 28/29 Şubat).
+const maxDateBase = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+const maxDay = Math.min(
+  now.getDate(),
+  new Date(maxDateBase.getFullYear(), maxDateBase.getMonth() + 1, 0).getDate(),
+);
+const maxDateObject = new Date(maxDateBase.getFullYear(), maxDateBase.getMonth(), maxDay);
+const minDate = formatDateInput(minDateObject);
+const maxDate = formatDateInput(maxDateObject);
+
+const namePattern = /^[A-Za-zÇĞİÖŞÜçğıöşü][A-Za-zÇĞİÖŞÜçğıöşü\s.'’&-]*$/;
+
+const validateFullName = (value: string) => {
+  const normalized = value.trim().replace(/\s+/g, ' ');
+  if (!namePattern.test(normalized)) {
+    return 'Ad alanına yalnızca ad, soyad veya şirket adı girin; telefon numarası girmeyin.';
+  }
+  if (!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(normalized) || normalized.length < 2) {
+    return 'Geçerli bir ad, soyad veya şirket adı girin.';
+  }
+  return true;
+};
+
+const validateTurkishPhone = (value: string) => {
+  const digits = value.replace(/\D/g, '');
+  const isValid =
+    /^(?:05\d{9}|5\d{9}|905\d{9}|00905\d{9})$/.test(digits) &&
+    !/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(value);
+  return isValid || 'Geçerli bir cep telefonu girin. Örnek: 0555 111 22 33';
+};
 
 // Adımları ve doğrulayacak alanları tanımlıyoruz
 const STEPS: Array<{
@@ -211,10 +250,12 @@ function ContactForm() {
                   id="full-name"
                   type="text"
                   placeholder="Adınız, soyadınız veya şirket adınız"
+                  autoComplete="name"
                   $hasError={Boolean(errors.fullName)}
                   {...register('fullName', {
                     required: 'Ad soyad veya şirket adı zorunludur.',
                     minLength: { value: 2, message: 'En az iki karakter girin.' },
+                    validate: validateFullName,
                   })}
                 />
                 {errors.fullName?.message && <ErrorMessage>{errors.fullName.message}</ErrorMessage>}
@@ -225,11 +266,14 @@ function ContactForm() {
                 <Input
                   id="phone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={11}
                   placeholder="0555 111 22 33"
                   $hasError={Boolean(errors.phone)}
                   {...register('phone', {
                     required: 'Telefon numarası zorunludur.',
-                    minLength: { value: 10, message: 'Geçerli bir telefon girin.' },
+                    validate: validateTurkishPhone,
                   })}
                 />
                 {errors.phone?.message && <ErrorMessage>{errors.phone.message}</ErrorMessage>}
@@ -404,9 +448,15 @@ function ContactForm() {
                 <Input
                   id="requested-date"
                   type="date"
-                  min={today}
+                  min={minDate}
+                  max={maxDate}
                   $hasError={Boolean(errors.requestedDate)}
-                  {...register('requestedDate', { required: 'Lütfen bir tarih seçin.' })}
+                  {...register('requestedDate', {
+                    required: 'Lütfen bir tarih seçin.',
+                    validate: (value) =>
+                      (value >= minDate && value <= maxDate) ||
+                      `Yalnızca ${minDate} ile ${maxDate} arasındaki bir tarihi seçebilirsiniz.`,
+                  })}
                 />
                 {errors.requestedDate?.message && <ErrorMessage>{errors.requestedDate.message}</ErrorMessage>}
               </FieldGroup>

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer';
+import Sitemap from 'vite-plugin-sitemap'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,6 +11,15 @@ export default defineConfig({
       filename: 'bundle-analizi.html', // Oluşturulacak rapor dosyasının adı
       gzipSize: true, // Gzip ile sıkıştırıldıktan sonraki gerçek boyutları gösterir
       brotliSize: true // Brotli sıkıştırması sonrası boyutları gösterir
+    }),
+    Sitemap({
+      hostname: 'https://novaliscleaning.com', // Sitenin tam adresi
+      dynamicRoutes: [ // Buraya sitendeki rotaları ekle
+        '/',
+        '/hizmetler',
+        '/iletisim'
+      ],
+      generateRobotsTxt: true // İstersen robots.txt dosyasını da otomatik oluşturur
     })
   ],
   build: {

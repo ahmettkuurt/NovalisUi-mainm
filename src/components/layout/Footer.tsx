@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import {
   FaFacebookF,
   FaInstagram,
-  FaLinkedinIn,
+  FaTiktok,
   FaWhatsapp,
 } from 'react-icons/fa';
 
@@ -105,7 +105,7 @@ function Footer() {
             <FooterBottomActions>
               <SocialLinks>
                 <SocialLink
-                  href="https://www.instagram.com/"
+                  href="https://www.instagram.com/novaliscleaning/"
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Instagram"
@@ -117,19 +117,19 @@ function Footer() {
                 </SocialLink>
 
                 <SocialLink
-                  href="https://www.linkedin.com/"
+                  href="https://www.tiktok.com/@novaliscleaning?is_from_webapp=1&sender_device=pc"
                   target="_blank"
                   rel="noreferrer"
-                  aria-label="LinkedIn"
+                  aria-label="TikTok"
                 >
-                  <FaLinkedinIn
+                  <FaTiktok
                     size={14}
                     aria-hidden="true"
                   />
                 </SocialLink>
 
                 <SocialLink
-                  href="https://www.facebook.com/"
+                  href="https://www.facebook.com/profile.php?id=61592327112402"
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Facebook"

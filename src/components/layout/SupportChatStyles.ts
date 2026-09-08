@@ -23,12 +23,12 @@ export const ChatShell = styled.div`
 
 export const ChatButton = styled.button<{ $isOpen: boolean }>`
   position: fixed;
-  right: 96px;
-  bottom: 20px;
+  right: var(--contact-right);
+  bottom: var(--contact-bottom);
   z-index: 1101;
   display: inline-flex;
   min-width: 150px;
-  height: 54px;
+  height: var(--contact-size);
   padding: 0 18px;
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 18px;
@@ -64,11 +64,8 @@ export const ChatButton = styled.button<{ $isOpen: boolean }>`
   }
 
   @media (max-width: 560px) {
-    right: 74px;
-    bottom: 14px;
-    min-width: 48px;
-    width: 48px;
-    height: 48px;
+    min-width: var(--contact-size);
+    width: var(--contact-size);
     padding: 0;
   }
 `;
@@ -81,20 +78,21 @@ export const ChatButtonLabel = styled.span`
 
 export const ChatPanel = styled.section<{ $isOpen: boolean }>`
   position: fixed;
-  right: 18px;
-  bottom: 88px;
+  right: var(--contact-right);
+  bottom: var(--contact-panel-bottom);
   z-index: 1100;
   display: flex;
   width: min(390px, calc(100vw - 36px));
-  height: min(590px, calc(100vh - 170px));
-  min-height: 460px;
+  height: min(590px, calc(100vh - var(--contact-panel-bottom) - 14px));
+  height: min(590px, calc(100dvh - var(--contact-panel-bottom) - 14px));
+  min-height: 0;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.76);
   border-radius: 22px;
   background: ${({ theme }) => theme.colors.backgroundSoft};
   box-shadow: 0 24px 70px rgba(24, 63, 73, 0.24);
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden auto;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   pointer-events: ${({ $isOpen }) => ($isOpen ? 'auto' : 'none')};
   transform: ${({ $isOpen }) =>
@@ -107,13 +105,16 @@ export const ChatPanel = styled.section<{ $isOpen: boolean }>`
     visibility 180ms ease;
 
   @media (max-width: 560px) {
-    right: 13px;
-    bottom: 122px;
-    width: calc(100vw - 26px);
-    height: min(620px, calc(100vh - 148px));
-    min-height: 430px;
+    width: calc(100vw - 2 * var(--contact-right));
     border-radius: 18px;
     transform-origin: bottom right;
+  }
+
+  @media (max-height: 700px) {
+    bottom: 14px;
+    z-index: 1102;
+    height: calc(100vh - 28px);
+    height: calc(100dvh - 28px);
   }
 `;
 

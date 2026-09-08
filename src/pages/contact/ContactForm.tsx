@@ -518,6 +518,20 @@ function ContactForm() {
                   {errors.requestedDate?.message && <ErrorMessage>{errors.requestedDate.message}</ErrorMessage>}
                 </div>
               </FieldGroup>
+
+              <FieldGroup>
+                <FieldLabel htmlFor="preferred-time">
+                  Tercih edilen saat <RequiredMark>*</RequiredMark>
+                </FieldLabel>
+                <Input
+                  id="preferred-time"
+                  type="time"
+                  $hasError={Boolean(errors.preferredTime)}
+                  {...register('preferredTime', { required: 'Lütfen bir saat seçin.' })}
+                />
+                {errors.preferredTime?.message && <ErrorMessage>{errors.preferredTime.message}</ErrorMessage>}
+              </FieldGroup>
+
             </FormGrid>
           </FormSection>
         )}

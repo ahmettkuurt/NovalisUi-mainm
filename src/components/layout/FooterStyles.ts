@@ -156,7 +156,7 @@ export const LegalLinks = styled.div`
   align-items: center;
   gap: 16px;
 
-  span {
+  button {
     color: ${({ theme }) => theme.colors.textMuted};
     font-size: 12px;
   }
@@ -164,12 +164,12 @@ export const LegalLinks = styled.div`
 
 export const WhatsAppButton = styled.a`
   position: fixed;
-  right: 18px;
-  bottom: 20px;
+  right: var(--contact-right);
+  bottom: calc(var(--contact-bottom) + var(--contact-size) + var(--contact-gap));
   z-index: 900;
   display: inline-flex;
-  width: 54px;
-  height: 54px;
+  width: var(--contact-size);
+  height: var(--contact-size);
   border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 18px;
   background: linear-gradient(135deg, #21c45d 0%, #25d366 100%);
@@ -186,11 +186,12 @@ export const WhatsAppButton = styled.a`
     transform: translateY(-2px);
   }
 
-  @media (max-width: 480px) {
-    right: 14px;
-    bottom: 14px;
-    width: 48px;
-    height: 48px;
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 560px) {
     border-radius: 16px;
   }
 `;
@@ -237,5 +238,22 @@ export const FooterBottomActions = styled.div`
   @media (max-width: 560px) {
     width: 100%;
     justify-content: space-between;
+  }
+`;
+
+export const LegalButton = styled.button`
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-underline-offset: 4px;
+
+  && { color: rgba(255, 255, 255, 0.78); }
+  &:hover { text-decoration: underline; }
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.secondaryLight};
+    outline-offset: 4px;
+    border-radius: 3px;
   }
 `;

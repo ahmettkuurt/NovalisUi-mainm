@@ -7,6 +7,22 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  :root {
+    --contact-right: max(18px, env(safe-area-inset-right, 0px));
+    --contact-bottom: max(calc(36px + env(safe-area-inset-bottom, 0px)), var(--contact-footer-clearance, 0px));
+    --contact-size: 54px;
+    --contact-gap: 12px;
+    --contact-panel-bottom: calc(var(--contact-bottom) + 2 * var(--contact-size) + 2 * var(--contact-gap));
+  }
+
+  @media (max-width: 560px) {
+    :root {
+      --contact-right: max(14px, env(safe-area-inset-right, 0px));
+      --contact-bottom: max(calc(30px + env(safe-area-inset-bottom, 0px)), var(--contact-footer-clearance, 0px));
+      --contact-size: 48px;
+    }
+  }
+
   html {
     width: 100%;
     scroll-behavior: smooth;

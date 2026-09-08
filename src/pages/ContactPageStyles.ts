@@ -638,3 +638,98 @@ export const BackButton = styled.button`
 export const NextButton = styled(SubmitButton)`
   flex: 2;
 `;
+
+// Müsaitlik takvimi
+export const CalendarCard = styled.div<ValidationStyleProps>`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px;
+  border: 1px solid ${({ theme, $hasError }) => $hasError ? theme.colors.error : theme.colors.border};
+  border-radius: 16px;
+  background: ${({ theme }) => theme.colors.background};
+  &:focus-visible { outline: 2px solid ${({ theme }) => theme.colors.primary}; outline-offset: 3px; }
+  @media (max-width: 480px) { padding: 12px; }
+`;
+
+export const CalendarHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 15px;
+  font-weight: 700;
+`;
+
+export const CalendarNavButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 12px;
+  background: ${({ theme }) => theme.colors.backgroundSoft};
+  color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
+  &:hover:not(:disabled) { border-color: ${({ theme }) => theme.colors.primary}; }
+  &:focus-visible { outline: 2px solid ${({ theme }) => theme.colors.primary}; outline-offset: 2px; }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
+`;
+
+export const CalendarGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  @media (max-width: 480px) { gap: 3px; }
+`;
+
+export const CalendarWeekday = styled.span`
+  padding: 0 0 8px;
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+`;
+
+export const CalendarDay = styled.button<{ $selected: boolean }>`
+  display: flex;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid ${({ theme, $selected }) => $selected ? theme.colors.primary : 'rgba(73, 170, 183, 0.24)'};
+  border-radius: 10px;
+  background: ${({ theme, $selected }) => $selected ? theme.colors.primary : 'rgba(73, 170, 183, 0.08)'};
+  color: ${({ theme, $selected }) => $selected ? theme.colors.textWhite : theme.colors.primary};
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+  &:hover:not(:disabled) { border-color: ${({ theme }) => theme.colors.primary}; }
+  &:focus-visible { outline: 2px solid ${({ theme }) => theme.colors.primary}; outline-offset: 2px; }
+  &:disabled {
+    border-color: transparent;
+    background: ${({ theme }) => theme.colors.backgroundSoft};
+    color: ${({ theme }) => theme.colors.textMuted};
+    opacity: 0.5;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+  ${reducedMotion}
+`;
+
+export const CalendarFooter = styled.div`
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: 12px;
+  line-height: 1.6;
+  strong { color: ${({ theme }) => theme.colors.primary}; font-weight: 600; }
+`;

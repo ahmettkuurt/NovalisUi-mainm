@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import {
   CheckCircle2,
   ChevronLeft,
@@ -8,9 +8,11 @@ import {
   Send,
   ShieldCheck,
 } from 'lucide-react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
-import { createContactRequest } from '../../services/contactServices';
+import AvailabilityCalendar from './AvailabilityCalendar';
+
+import { createContactRequest, getAvailableDates } from '../../services/contactServices';
 import type { ContactFormData, ContactServiceType } from '../../types/contact';
 
 import {
@@ -142,12 +144,16 @@ function ContactForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [status, setStatus] = useState<FormStatus | null>(null);
   const [submissionId, setSubmissionId] = useState(() => crypto.randomUUID());
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [isLoadingAvailableDates, setIsLoadingAvailableDates] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState('');
   
   const serviceConsentId = useId();
   const marketingConsentId = useId();
 
   const {
     register,
+    setValue,
     control,
     trigger,
     reset,
@@ -167,6 +173,37 @@ function ContactForm() {
   const isConstructionCleaning = selectedServiceType === 'Insaat_Sonrasi_Temizlik';
   const isApartmentCleaning = selectedServiceType === 'Apartman_Ortak_Alan_Temizligi';
   const isMeteredCleaning = isHomeCleaning || isOfficeCleaning || isConstructionCleaning;
+
+  useEffect(() => {
+    let cancelled = false;
+    setValue('requestedDate', '', { shouldValidate: false });
+    setAvailableDates([]);
+    setIsLoadingAvailableDates(false);
+
+    if (!selectedServiceType) {
+      setAvailableDates([]);
+      setAvailabilityError('');
+      return;
+    }
+
+    setIsLoadingAvailableDates(true);
+    setAvailabilityError('');
+
+    getAvailableDates({
+      serviceType: selectedServiceType,
+      from: minDate,
+      to: maxDate,
+    }).then((result) => {
+      if (cancelled) return;
+      setAvailableDates(result.success ? result.dates : []);
+      setAvailabilityError(result.success ? '' : (result.message || 'Müsait tarihler alınamadı.'));
+      setIsLoadingAvailableDates(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedServiceType, setValue]);
 
   const handleNext = async () => {
     // Sadece mevcut adımın alanlarını doğrula
@@ -440,40 +477,47 @@ function ContactForm() {
                 {errors.addressLine?.message && <ErrorMessage>{errors.addressLine.message}</ErrorMessage>}
               </FieldGroup>
 
-              {/* Eklenen Tarih ve Saat Alanları */}
-              <FieldGroup>
-                <FieldLabel htmlFor="requested-date">
+              <FieldGroup style={{ gridColumn: '1 / -1' }}>
+                <FieldLabel as="span" id="requested-date-label">
                   Tercih edilen tarih <RequiredMark>*</RequiredMark>
                 </FieldLabel>
-                <Input
-                  id="requested-date"
-                  type="date"
-                  min={minDate}
-                  max={maxDate}
-                  $hasError={Boolean(errors.requestedDate)}
-                  {...register('requestedDate', {
-                    required: 'Lütfen bir tarih seçin.',
+                <Controller
+                  name="requestedDate"
+                  control={control}
+                  rules={{
+                    required: 'Lütfen müsait bir tarih seçin.',
                     validate: (value) =>
-                      (value >= minDate && value <= maxDate) ||
-                      `Yalnızca ${minDate} ile ${maxDate} arasındaki bir tarihi seçebilirsiniz.`,
-                  })}
+                      (!isLoadingAvailableDates && !availabilityError &&
+                        value >= minDate && value <= maxDate && availableDates.includes(value)) ||
+                      'Bu tarih müsait değil. Lütfen takvimden başka bir gün seçin.',
+                  }}
+                  render={({ field, fieldState }) => (
+                    <AvailabilityCalendar
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      inputRef={field.ref}
+                      availableDates={availableDates}
+                      minDate={minDate}
+                      maxDate={maxDate}
+                      isLoading={isLoadingAvailableDates}
+                      disabled={!selectedServiceType || Boolean(availabilityError)}
+                      hasError={Boolean(fieldState.error)}
+                      labelledBy="requested-date-label"
+                      describedBy="requested-date-status"
+                    />
+                  )}
                 />
-                {errors.requestedDate?.message && <ErrorMessage>{errors.requestedDate.message}</ErrorMessage>}
+                <div id="requested-date-status" aria-live="polite">
+                  {isLoadingAvailableDates && <FieldHint>Müsait günler yükleniyor…</FieldHint>}
+                  {availabilityError && <ErrorMessage>{availabilityError}</ErrorMessage>}
+                  {!selectedServiceType && <FieldHint>Önce hizmet türünü seçin.</FieldHint>}
+                  {selectedServiceType && !isLoadingAvailableDates && !availabilityError && availableDates.length === 0 && (
+                    <FieldHint>Bu aralıkta şu an müsait randevu günü bulunmuyor.</FieldHint>
+                  )}
+                  {errors.requestedDate?.message && <ErrorMessage>{errors.requestedDate.message}</ErrorMessage>}
+                </div>
               </FieldGroup>
-
-              <FieldGroup>
-                <FieldLabel htmlFor="preferred-time">
-                  Tercih edilen saat <RequiredMark>*</RequiredMark>
-                </FieldLabel>
-                <Input
-                  id="preferred-time"
-                  type="time"
-                  $hasError={Boolean(errors.preferredTime)}
-                  {...register('preferredTime', { required: 'Lütfen bir saat seçin.' })}
-                />
-                {errors.preferredTime?.message && <ErrorMessage>{errors.preferredTime.message}</ErrorMessage>}
-              </FieldGroup>
-
             </FormGrid>
           </FormSection>
         )}

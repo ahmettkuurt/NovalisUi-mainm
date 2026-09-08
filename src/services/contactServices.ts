@@ -10,6 +10,13 @@ const WEB_FORM_ENDPOINT =
   import.meta.env.VITE_WEB_FORM_ENDPOINT?.trim() ||
   DEFAULT_WEB_FORM_ENDPOINT;
 
+const DEFAULT_AVAILABILITY_ENDPOINT =
+  'https://otomasyon.novaliscleaning.com/webhook/availability-dates';
+
+const AVAILABILITY_ENDPOINT =
+  import.meta.env.VITE_AVAILABILITY_ENDPOINT?.trim() ||
+  DEFAULT_AVAILABILITY_ENDPOINT;
+
 const normalizePhone = (value: string) => {
   const digits = value.replace(/\D/g, '');
 
@@ -82,6 +89,40 @@ const readResponse = async (response: Response) => {
     return JSON.parse(text) as Record<string, unknown>;
   } catch {
     return { message: text };
+  }
+};
+
+export const getAvailableDates = async (params: {
+  serviceType: string;
+  from: string;
+  to: string;
+}): Promise<{ success: boolean; dates: string[]; message?: string }> => {
+  try {
+    const query = new URLSearchParams({
+      service_type: params.serviceType,
+      from: params.from,
+      to: params.to,
+    });
+    const response = await fetch(`${AVAILABILITY_ENDPOINT}?${query.toString()}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    });
+    const result = await readResponse(response);
+    const dates = Array.isArray(result.available_dates)
+      ? result.available_dates.filter((value): value is string => typeof value === 'string')
+      : [];
+
+    if (!response.ok) {
+      return {
+        success: false,
+        dates: [],
+        message: typeof result.message === 'string' ? result.message : 'Müsait tarihler alınamadı.',
+      };
+    }
+
+    return { success: true, dates };
+  } catch {
+    return { success: false, dates: [], message: 'Müsait tarihler alınamadı.' };
   }
 };
 
